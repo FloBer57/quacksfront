@@ -18,7 +18,7 @@ const request = async (url, options) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Request failed:', error); // Ajouter un journal d'erreur
+    console.error('Request failed:', error); 
 
     if (error.response) {
       console.error('Response data:', error.response.data); // Journal des données de réponse

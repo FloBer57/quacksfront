@@ -7,7 +7,7 @@ const resetPasswordRequest = (email) => post('/Authentication/reset-password-req
 
 const resetPassword = (data) => post('/Authentication/reset-password', data);
 
-const refreshToken = (token) => post('/Authentication/refresh', { token });
+const refreshToken = (data) => post('/Authentication/refresh', data);
 
 const revokeRefreshToken = (token) => post('/Authentication/revoke', { token });
 
