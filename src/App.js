@@ -3,6 +3,10 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { AuthProvider } from './context/authContext';
 import LoginForm from './pages/Login';
 import HomePage from './pages/HomePage';
+import Unauthorized from './pages/Unauthorized';
+import Forbidden from './pages/Forbidden';
+import NotFound from './pages/NotFound';
+import Error from './pages/Error';
 import ProtectedRoute from './routes/ProtectedRoute';
 import RedirectIfAuthenticated from './routes/RedirectIfAuthenticated';
 
@@ -27,7 +31,11 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/forbidden" element={<Forbidden />} />
+          <Route path="/not-found" element={<NotFound />} />
+          <Route path="/error" element={<Error />} />
+          <Route path="*" element={<Navigate to="/not-found" />} />
         </Routes>
       </Router>
     </AuthProvider>

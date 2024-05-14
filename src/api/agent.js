@@ -18,15 +18,8 @@ const request = async (url, options) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Request failed:', error); 
-
     if (error.response) {
-      console.error('Response data:', error.response.data); // Journal des données de réponse
-      console.error('Response status:', error.response.status); // Journal du statut de la réponse
-      console.error('Response headers:', error.response.headers); // Journal des en-têtes de la réponse
-
-      const errorMessage = error.response.data?.message || error.response.data || 'Error occurred';
-      throw new Error(errorMessage);
+      throw new Error(error.response.data || 'Error occurred');
     } else {
       throw new Error('Network error');
     }
