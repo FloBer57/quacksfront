@@ -1,0 +1,23 @@
+/* src/components/Channelbar.css */
+
+.navbar .nav-link {
+    padding: 0;
+  }
+  
+  .navbar .nav-link .position-relative {
+    display: inline-block;
+  }
+  
+  .navbar .badge {
+    font-size: 0.75rem;
+    padding: 0.5em 0.6em;
+  }
+  
+  .navbar-brand img {
+    height: 40px;
+  }
+  
+  .navbar .fa-plus-circle {
+    font-size: 1.5rem;
+  }
+  
