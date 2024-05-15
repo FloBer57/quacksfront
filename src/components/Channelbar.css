@@ -1,23 +1,51 @@
 /* src/components/Channelbar.css */
+.navbar-nav {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.nav-item {
+  display: inline-block;
+}
 
 .navbar .nav-link {
-    padding: 0;
-  }
-  
-  .navbar .nav-link .position-relative {
-    display: inline-block;
-  }
-  
-  .navbar .badge {
-    font-size: 0.75rem;
-    padding: 0.5em 0.6em;
-  }
-  
-  .navbar-brand img {
-    height: 40px;
-  }
-  
-  .navbar .fa-plus-circle {
-    font-size: 1.5rem;
-  }
-  
+  padding: 0;
+}
+
+.navbar .nav-link .position-relative {
+  display: inline-block;
+}
+
+.navbar .badge {
+  font-size: 0.75rem;
+  padding: 0.5em 0.6em;
+}
+
+.navbar-brand img {
+  height: 40px;
+}
+
+.navbar .fa-plus-circle {
+  font-size: 1.5rem;
+}
+
+.discordimage {
+  height: 100%;
+  width: 80%;
+}
+
+.iconcircle{
+  margin-top: 5px;
+  width: 55px;
+  height: 100%;
+  object-fit: contain;
+}
+
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-bottom {
+  padding: 0;
+}
+
+.channelbar {
+  height: 70px !important;
+}
