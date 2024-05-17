@@ -16,11 +16,9 @@ const HomePage = () => {
   useEffect(() => {
     const fetchPersonData = async () => {
       const id = getUserIdFromToken();
-      console.log("User ID from token:", id); // Log the ID
       if (id) {
         try {
           const personData = await getPersonById(id, navigate); // Pass navigate to the service
-          console.log("Person data fetched:", personData); // Log the fetched data
           setPerson(personData);
         } catch (error) {
           console.error("Error fetching person data:", error);
@@ -35,15 +33,19 @@ const HomePage = () => {
     setSelectedChannelId(channelId);
   };
 
+  const handleLogoClick = () => {
+    setSelectedChannelId(null);
+  };
+
   if (person === null) {
     return <div>Loading...</div>; // or any other loading indicator
   }
 
   return (
     <div className="d-flex flex-column">
-      <Navbar />
-      {selectedChannelId ? <Chat channelId={selectedChannelId} /> : <Accueil person={person} />}
-      <ChannelbarWithProvider personId={person.person_Id} onChannelClick={handleChannelClick} />
+      <Navbar person={person} />
+      {selectedChannelId ? <Chat channelId={selectedChannelId} personId={person.person_Id} /> : <Accueil person={person} />}
+      <ChannelbarWithProvider personId={person.person_Id} onChannelClick={handleChannelClick} onLogoClick={handleLogoClick} />
     </div>
   );
 };

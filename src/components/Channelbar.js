@@ -1,11 +1,17 @@
-// src/components/Channelbar.js
 import React, { useContext } from 'react';
 import './Channelbar.css';
 import { personXchannelContext, PersonXchannelProvider } from '../context/personxchannelontext';
+import { useNavigate } from 'react-router-dom';
 
 const url = 'https://localhost:7019';
-const Channelbar = ({ onChannelClick }) => {
+
+const Channelbar = ({ onChannelClick, onLogoClick }) => {
   const { channels, loading, error } = useContext(personXchannelContext);
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate("/home");
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -14,7 +20,7 @@ const Channelbar = ({ onChannelClick }) => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
       <div className="container-fluid justify-content-between channelbar">
         {/* Logo à gauche */}
-        <a className="navbar-brand" href="#">
+        <a className="navbar-brand" href="#" onClick={onLogoClick}>
           <img className="QuackersLogo" src={`${url}/Image/WebsiteNeeds/QuacksLogo.png`} height="40" alt="Logo" />
         </a>
 
@@ -24,7 +30,7 @@ const Channelbar = ({ onChannelClick }) => {
             <li key={channel.channel_Id} className="nav-item me-3 me-lg-1">
               <a className="nav-link" href="#" onClick={() => onChannelClick(channel.channel_Id)}>
                 <span className="position-relative">
-                 <img src={`${url}${channel.channel_ImagePath}`} className="rounded-circle iconcircle" height="40" alt={channel.channel_Name} />
+                  <img src={`${url}${channel.channel_ImagePath}`} className="rounded-circle iconcircle" height="40" alt={channel.channel_Name} />
                   <span className="badge position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
                     147
                   </span>
@@ -43,9 +49,9 @@ const Channelbar = ({ onChannelClick }) => {
   );
 };
 
-const ChannelbarWithProvider = ({ personId, onChannelClick }) => (
+const ChannelbarWithProvider = ({ personId, onChannelClick, onLogoClick }) => (
   <PersonXchannelProvider personId={personId}>
-    <Channelbar onChannelClick={onChannelClick} />
+    <Channelbar onChannelClick={onChannelClick} onLogoClick={onLogoClick} />
   </PersonXchannelProvider>
 );
 

@@ -14,29 +14,32 @@ export const handleError = (error, navigate) => {
     let errorMessage = 'An error occurred';
     switch (status) {
       case 400:
-        errorMessage = 'Bad Request: ' + data;
+        errorMessage = 'Bad Request: ' + JSON.stringify(data);
         break;
       case 401:
-        errorMessage = 'Unauthorized: ' + data;
+        errorMessage = 'Unauthorized: ' + JSON.stringify(data);
         if (navigate) navigate('/unauthorized'); // Redirige vers la page de login
         break;
       case 403:
-        errorMessage = 'Forbidden: ' + data;
+        errorMessage = 'Forbidden: ' + JSON.stringify(data);
         if (navigate) navigate('/forbidden'); // Redirige vers une page interdite
         break;
       case 404:
-        errorMessage = 'Not Found: ' + data;
+        errorMessage = 'Not Found: ' + JSON.stringify(data);
         if (navigate) navigate('/not-found'); // Redirige vers une page non trouvée
         break;
       case 409:
-        errorMessage = 'Conflict: ' + data;
+        errorMessage = 'Conflict: ' + JSON.stringify(data);
+        break;
+      case 415:
+        errorMessage = 'Unsupported Media Type: ' + JSON.stringify(data);
         break;
       case 500:
-        errorMessage = 'Internal Server Error: ' + data;
+        errorMessage = 'Internal Server Error: ' + JSON.stringify(data);
         if (navigate) navigate('/error'); // Redirige vers une page d'erreur générale
         break;
       default:
-        errorMessage = 'Error: ' + data;
+        errorMessage = 'Error: ' + JSON.stringify(data);
     }
     throw new Error(errorMessage);
   } else {
