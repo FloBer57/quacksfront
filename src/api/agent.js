@@ -1,5 +1,6 @@
 // src/api/agent.js
 import axios from 'axios';
+import { handleError } from '../utils/errorHandler'; 
 
 const API_URL = 'https://localhost:7019/api';
 
@@ -10,19 +11,24 @@ const axiosInstance = axios.create({
   },
 });
 
+// Interceptor pour les réponses
+axiosInstance.interceptors.response.use(
+  response => response,
+  error => {
+    handleError(error);
+    return Promise.reject(error);
+  }
+);
+
 const request = async (url, options) => {
   try {
     const response = await axiosInstance({
       url,
       ...options,
     });
-    return response.data;
+    return response.data; 
   } catch (error) {
-    if (error.response) {
-      throw new Error(error.response.data || 'Error occurred');
-    } else {
-      throw new Error('Network error');
-    }
+    throw error;
   }
 };
 

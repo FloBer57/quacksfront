@@ -49,3 +49,22 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-bottom {
 .channelbar {
   height: 70px !important;
 }
+
+span.badge.position-absolute.top-0.start-100.translate-middle.p-2.bg-danger.border.border-light.rounded-circle {
+  margin-top: 15px;
+  font-size: 10px;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+  margin-right: 10px;
+}
+
+.QuackersLogo {
+  width: 65px;
+  height: 65px !important;
+  scale: 1.2;
+  position: relative;
+  top: 4px;
+  /* margin-top: 0px; */
+}
