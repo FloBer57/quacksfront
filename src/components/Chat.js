@@ -5,12 +5,8 @@ import "./Chat.css";
 import { getMessagesByChannelId, getChannelById } from "../services/channelService";
 import { sendMessage } from "../services/messageService";
 import { createAttachments } from "../services/attachmentService";
-import { getPersonsByChannelId, getPersonsByRoleInChannel } from "../services/personxchannelservice";
-
-const roleMapping = {
-  1: 'Administrateur',
-  2: 'Utilisateur'
-};
+import { getPersonsByChannelId} from "../services/personxchannelservice";
+import {getPersonsByRoleInChannel} from "../services/channelpersonrolexpersonxchannelservice";
 
 const Chat = ({ channelId, personId }) => {
   const [messages, setMessages] = useState([]);
@@ -18,7 +14,8 @@ const Chat = ({ channelId, personId }) => {
   const [files, setFiles] = useState([]);
   const [otherPerson, setOtherPerson] = useState(null);
   const [channel, setChannel] = useState(null);
-  const [members, setMembers] = useState({});
+  const [adminMembers, setAdminMembers] = useState([]);
+  const [userMembers, setUserMembers] = useState([]);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -30,7 +27,7 @@ const Chat = ({ channelId, personId }) => {
       }
     };
 
-    const fetchChannelAndRoles = async () => {
+    const fetchChannel = async () => {
       try {
         const channelData = await getChannelById(channelId);
         setChannel(channelData);
@@ -40,21 +37,26 @@ const Chat = ({ channelId, personId }) => {
           const other = persons.find((p) => p.person_Id !== personId);
           setOtherPerson(other);
         } else if (channelData.channelType_Id === 2) {
-          const adminMembers = await getPersonsByRoleInChannel(channelId, 1);
-          const userMembers = await getPersonsByRoleInChannel(channelId, 2);
-          
-          setMembers({
-            Administrateur: adminMembers,
-            Utilisateur: userMembers
-          });
+          fetchMembersByRole(channelId);
         }
       } catch (error) {
         console.error("Error fetching channel or persons:", error);
       }
     };
 
+    const fetchMembersByRole = async (channelId) => {
+      try {
+        const fetchedAdminMembers = await getPersonsByRoleInChannel(channelId, 1);
+        const fetchedUserMembers = await getPersonsByRoleInChannel(channelId, 2);
+        setAdminMembers(fetchedAdminMembers);
+        setUserMembers(fetchedUserMembers);
+      } catch (error) {
+        console.error("Error fetching members by role:", error);
+      }
+    };
+
     fetchMessages();
-    fetchChannelAndRoles();
+    fetchChannel();
   }, [channelId, personId]);
 
   const handleSendMessage = async () => {
@@ -66,8 +68,6 @@ const Chat = ({ channelId, personId }) => {
       PersonId: personId,
     };
 
-    console.log("Sending message:", messageDto); // Log the messageDto
-
     try {
       const sentMessage = await sendMessage(messageDto);
 
@@ -75,7 +75,6 @@ const Chat = ({ channelId, personId }) => {
         const attachmentDto = {
           Message_Id: sentMessage.message_Id,
         };
-        console.log("Sending attachments:", attachmentDto, files); // Log attachments data
 
         const attachments = await createAttachments(attachmentDto, files);
         sentMessage.attachments = attachments;
@@ -93,12 +92,11 @@ const Chat = ({ channelId, personId }) => {
     setFiles([...event.target.files]);
   };
 
-  const renderMembers = (role) => {
-    const roleMembers = members[role] || [];
+  const renderMembers = (members, roleName) => {
     return (
-      <div key={role}>
-        <h5>{role}</h5>
-        {roleMembers.map((member) => (
+      <div key={roleName}>
+        <h5>{roleName}</h5>
+        {members.map((member) => (
           <div key={member.person_Id} className="member-item">
             <img src={`https://localhost:7019/${member.person_ProfilPicturePath}`} alt="avatar" width="30" height="30" />
             <span>{member.person_FirstName} {member.person_LastName}</span>
@@ -233,8 +231,8 @@ const Chat = ({ channelId, personId }) => {
         </div>
         {channel?.channelType_Id === 2 && (
           <div className="col-2 members-list">
-            {renderMembers("Administrateur")}
-            {renderMembers("Utilisateur")}
+            {renderMembers(adminMembers, "Administrateur")}
+            {renderMembers(userMembers, "Utilisateur")}
           </div>
         )}
       </div>

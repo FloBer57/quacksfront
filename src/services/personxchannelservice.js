@@ -9,8 +9,5 @@ const getPersonsByChannelId = async (channelId) => {
   return await get(`/PersonXchannel/channels/${channelId}/persons`);
 };
 
-const getPersonsByRoleInChannel = async (channelId, roleId) => {
-  return await get(`/PersonXchannel/channels/${channelId}/roles/${roleId}/persons`);
-};
 
-export { getChannelsByPersonId, getPersonsByChannelId, getPersonsByRoleInChannel };
+export { getChannelsByPersonId, getPersonsByChannelId};
