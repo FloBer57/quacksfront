@@ -8,6 +8,9 @@ import { createAttachments } from '../../services/attachmentService';
 import { getPersonsByChannelId } from '../../services/personxchannelservice';
 import { getPersonsByRoleInChannel } from '../../services/channelpersonrolexpersonxchannelservice';
 import signalRService from '../../signalr-connection';
+import MessageList from './MessageList';
+import MessageInput from './MessageInput';
+import ChannelHeader from './ChannelHeader';
 
 const Chat = ({ channelId, personId }) => {
   const [messages, setMessages] = useState([]);
@@ -17,7 +20,7 @@ const Chat = ({ channelId, personId }) => {
   const [channel, setChannel] = useState(null);
   const [adminMembers, setAdminMembers] = useState([]);
   const [userMembers, setUserMembers] = useState([]);
-  const isSubscribed = useRef(false); // Utilisez useRef pour vérifier l'abonnement
+  const isSubscribed = useRef(false);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -63,11 +66,10 @@ const Chat = ({ channelId, personId }) => {
 
   useEffect(() => {
     if (!isSubscribed.current) {
-      // SignalR: Subscribe to messages
       signalRService.onMessageReceived((userId, message) => {
         setMessages((prevMessages) => [...prevMessages, { person_Id: userId, message_Text: message, message_Date: new Date().toISOString() }]);
       });
-      isSubscribed.current = true; // Marquez l'abonnement comme fait
+      isSubscribed.current = true;
     }
   }, []);
 
@@ -93,10 +95,7 @@ const Chat = ({ channelId, personId }) => {
         setFiles([]);
       }
 
-      // Utilisation de SignalR pour envoyer le message
       signalRService.sendMessage(personId, newMessage);
-
-      // Ne pas ajouter le message manuellement ici car il sera ajouté via SignalR
       setNewMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
@@ -137,110 +136,14 @@ const Chat = ({ channelId, personId }) => {
         }>
           <div className="card chat-app">
             <div className="chat">
-              <div
-                className={
-                  channel?.channelType_Id === 2
-                    ? 'chat-headerchanneltype2 chat-header'
-                    : 'chat-header clearfix'
-                }
-              >
-                <div className="row">
-                  <div className="col-6 receiver-profil">
-                    {otherPerson && (
-                      <>
-                        <a
-                          href="javascript:void(0);"
-                          data-toggle="modal"
-                          data-target="#view_info"
-                        >
-                          <img
-                            src={`https://localhost:7019/${otherPerson.person_ProfilPicturePath}`}
-                            alt="avatar"
-                          />
-                        </a>
-                        <div className="chat-about">
-                          <h6 className="m-b-0">
-                            {otherPerson.person_FirstName}{' '}
-                            {otherPerson.person_LastName}
-                          </h6>
-                          <small>{otherPerson.person_Description}</small>{' '}
-                          {/* Here you can add actual last seen data if available */}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div
-                className={
-                  channel?.channelType_Id === 2
-                    ? 'chat-historychanneltype2 chat-history'
-                    : 'chat-history'
-                }
-              >
-                <ul className="m-b-0">
-                  {messages.map((message, index) => (
-                    <li key={index} className="clearfix">
-                      <div className="message-data">
-                        <span className="message-data-time">
-                          {new Date(message.message_Date).toLocaleString()}
-                        </span>
-                      </div>
-                      <div
-                        className={`message ${
-                          message.person_Id === personId
-                            ? 'my-message'
-                            : 'other-message float-right'
-                        }`}
-                      >
-                        {message.message_Text || message.message}
-                        {message.attachments &&
-                          message.attachments.map((attachment, index) => (
-                            <div key={index} className="attachment">
-                              <a
-                                href={`https://localhost:7019/${attachment.AttachmentThing}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {attachment.Attachment_Name}
-                              </a>
-                            </div>
-                          ))}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="chat-message clearfix">
-                <div className="input-group mb-0">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter text here..."
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                  />
-                  <div className="input-group-append">
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleSendMessage}
-                    >
-                      <i className="fa fa-paper-plane" aria-hidden="true"></i>
-                    </button>
-                    <input
-                      type="file"
-                      className="btn btn-secondary"
-                      onChange={handleFileChange}
-                      multiple
-                      style={{ display: 'none' }}
-                      id="fileInput"
-                    />
-                    <label htmlFor="fileInput" className="btn btn-secondary">
-                      <i className="fa fa-paperclip" aria-hidden="true"></i>
-                    </label>
-                  </div>
-                </div>
-              </div>
+              <ChannelHeader otherPerson={otherPerson} />
+              <MessageList messages={messages} personId={personId} />
+              <MessageInput
+                newMessage={newMessage}
+                setNewMessage={setNewMessage}
+                handleSendMessage={handleSendMessage}
+                handleFileChange={handleFileChange}
+              />
             </div>
           </div>
         </div>
