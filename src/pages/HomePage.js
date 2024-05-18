@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import Chat from '../components/Chat';
+import Chat from '../components/Chat/Chat';
 import Accueil from '../components/Acceuil';
 import ChannelbarWithProvider from '../components/Channelbar';
 import { getUserIdFromToken } from '../services/authService';

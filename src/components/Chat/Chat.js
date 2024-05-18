@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "./Chat.css";
-import { getMessagesByChannelId, getChannelById } from "../services/channelService";
-import { sendMessage } from "../services/messageService";
-import { createAttachments } from "../services/attachmentService";
-import { getPersonsByChannelId} from "../services/personxchannelservice";
-import {getPersonsByRoleInChannel} from "../services/channelpersonrolexpersonxchannelservice";
+import React, { useEffect, useState, useRef } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import './Chat.css';
+import { getMessagesByChannelId, getChannelById } from '../../services/channelService';
+import { sendMessage } from '../../services/messageService';
+import { createAttachments } from '../../services/attachmentService';
+import { getPersonsByChannelId } from '../../services/personxchannelservice';
+import { getPersonsByRoleInChannel } from '../../services/channelpersonrolexpersonxchannelservice';
+import signalRService from '../../signalr-connection';
 
 const Chat = ({ channelId, personId }) => {
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
+  const [newMessage, setNewMessage] = useState('');
   const [files, setFiles] = useState([]);
   const [otherPerson, setOtherPerson] = useState(null);
   const [channel, setChannel] = useState(null);
   const [adminMembers, setAdminMembers] = useState([]);
   const [userMembers, setUserMembers] = useState([]);
+  const isSubscribed = useRef(false); // Utilisez useRef pour vérifier l'abonnement
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -23,7 +25,7 @@ const Chat = ({ channelId, personId }) => {
         const fetchedMessages = await getMessagesByChannelId(channelId);
         setMessages(fetchedMessages);
       } catch (error) {
-        console.error("Error fetching messages:", error);
+        console.error('Error fetching messages:', error);
       }
     };
 
@@ -40,7 +42,7 @@ const Chat = ({ channelId, personId }) => {
           fetchMembersByRole(channelId);
         }
       } catch (error) {
-        console.error("Error fetching channel or persons:", error);
+        console.error('Error fetching channel or persons:', error);
       }
     };
 
@@ -51,7 +53,7 @@ const Chat = ({ channelId, personId }) => {
         setAdminMembers(fetchedAdminMembers);
         setUserMembers(fetchedUserMembers);
       } catch (error) {
-        console.error("Error fetching members by role:", error);
+        console.error('Error fetching members by role:', error);
       }
     };
 
@@ -59,8 +61,18 @@ const Chat = ({ channelId, personId }) => {
     fetchChannel();
   }, [channelId, personId]);
 
+  useEffect(() => {
+    if (!isSubscribed.current) {
+      // SignalR: Subscribe to messages
+      signalRService.onMessageReceived((userId, message) => {
+        setMessages((prevMessages) => [...prevMessages, { person_Id: userId, message_Text: message, message_Date: new Date().toISOString() }]);
+      });
+      isSubscribed.current = true; // Marquez l'abonnement comme fait
+    }
+  }, []);
+
   const handleSendMessage = async () => {
-    if (newMessage.trim() === "" && files.length === 0) return;
+    if (newMessage.trim() === '' && files.length === 0) return;
 
     const messageDto = {
       MessageText: newMessage,
@@ -81,10 +93,13 @@ const Chat = ({ channelId, personId }) => {
         setFiles([]);
       }
 
-      setMessages([...messages, sentMessage]);
-      setNewMessage("");
+      // Utilisation de SignalR pour envoyer le message
+      signalRService.sendMessage(personId, newMessage);
+
+      // Ne pas ajouter le message manuellement ici car il sera ajouté via SignalR
+      setNewMessage('');
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error);
     }
   };
 
@@ -110,23 +125,23 @@ const Chat = ({ channelId, personId }) => {
     <div
       className={
         channel?.channelType_Id === 2
-          ? "container-fluid chat-container chat-containerchanneltype2"
-          : "container-fluid chat-container"
+          ? 'container-fluid chat-container chat-containerchanneltype2'
+          : 'container-fluid chat-container'
       }
     >
       <div className="row clearfix">
         <div className={
-                  channel?.channelType_Id === 2
-                    ? "col-10"
-                    : "col-12"
+          channel?.channelType_Id === 2
+            ? 'col-10'
+            : 'col-12'
         }>
           <div className="card chat-app">
             <div className="chat">
               <div
                 className={
                   channel?.channelType_Id === 2
-                    ? "chat-headerchanneltype2 chat-header"
-                    : "chat-header clearfix"
+                    ? 'chat-headerchanneltype2 chat-header'
+                    : 'chat-header clearfix'
                 }
               >
                 <div className="row">
@@ -145,10 +160,10 @@ const Chat = ({ channelId, personId }) => {
                         </a>
                         <div className="chat-about">
                           <h6 className="m-b-0">
-                            {otherPerson.person_FirstName}{" "}
+                            {otherPerson.person_FirstName}{' '}
                             {otherPerson.person_LastName}
                           </h6>
-                          <small>{otherPerson.person_Description}</small>{" "}
+                          <small>{otherPerson.person_Description}</small>{' '}
                           {/* Here you can add actual last seen data if available */}
                         </div>
                       </>
@@ -159,13 +174,13 @@ const Chat = ({ channelId, personId }) => {
               <div
                 className={
                   channel?.channelType_Id === 2
-                    ? "chat-historychanneltype2 chat-history"
-                    : "chat-history"
+                    ? 'chat-historychanneltype2 chat-history'
+                    : 'chat-history'
                 }
               >
                 <ul className="m-b-0">
-                  {messages.map((message) => (
-                    <li key={message.message_Id} className="clearfix">
+                  {messages.map((message, index) => (
+                    <li key={index} className="clearfix">
                       <div className="message-data">
                         <span className="message-data-time">
                           {new Date(message.message_Date).toLocaleString()}
@@ -174,11 +189,11 @@ const Chat = ({ channelId, personId }) => {
                       <div
                         className={`message ${
                           message.person_Id === personId
-                            ? "my-message"
-                            : "other-message float-right"
+                            ? 'my-message'
+                            : 'other-message float-right'
                         }`}
                       >
-                        {message.message_Text}
+                        {message.message_Text || message.message}
                         {message.attachments &&
                           message.attachments.map((attachment, index) => (
                             <div key={index} className="attachment">
@@ -217,7 +232,7 @@ const Chat = ({ channelId, personId }) => {
                       className="btn btn-secondary"
                       onChange={handleFileChange}
                       multiple
-                      style={{ display: "none" }}
+                      style={{ display: 'none' }}
                       id="fileInput"
                     />
                     <label htmlFor="fileInput" className="btn btn-secondary">
@@ -231,8 +246,8 @@ const Chat = ({ channelId, personId }) => {
         </div>
         {channel?.channelType_Id === 2 && (
           <div className="col-2 members-list">
-            {renderMembers(adminMembers, "Administrateur")}
-            {renderMembers(userMembers, "Utilisateur")}
+            {renderMembers(adminMembers, 'Administrateur')}
+            {renderMembers(userMembers, 'Utilisateur')}
           </div>
         )}
       </div>
