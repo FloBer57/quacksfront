@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './Chat.css';
@@ -20,13 +20,20 @@ const Chat = ({ channelId, personId }) => {
   const [channel, setChannel] = useState(null);
   const [adminMembers, setAdminMembers] = useState([]);
   const [userMembers, setUserMembers] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const isSubscribed = useRef(false);
+  const listRef = useRef(null);
 
   useEffect(() => {
-    const fetchMessages = async () => {
+    const fetchMessages = async (page) => {
       try {
-        const fetchedMessages = await getMessagesByChannelId(channelId);
-        setMessages(fetchedMessages);
+        const fetchedMessages = await getMessagesByChannelId(channelId, page, 20); // fetch 20 messages at a time
+        if (fetchedMessages.length > 0) {
+          setMessages((prevMessages) => [...fetchedMessages, ...prevMessages]);
+        } else {
+          setHasMore(false); // no more messages to load
+        }
       } catch (error) {
         console.error('Error fetching messages:', error);
       }
@@ -60,9 +67,9 @@ const Chat = ({ channelId, personId }) => {
       }
     };
 
-    fetchMessages();
+    fetchMessages(page);
     fetchChannel();
-  }, [channelId, personId]);
+  }, [channelId, personId, page]);
 
   useEffect(() => {
     if (!isSubscribed.current) {
@@ -106,6 +113,14 @@ const Chat = ({ channelId, personId }) => {
     setFiles([...event.target.files]);
   };
 
+  const handleScroll = useCallback(() => {
+    if (listRef.current) {
+      if (listRef.current.scrollTop === 0 && hasMore) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  }, [hasMore]);
+
   const renderMembers = (members, roleName) => {
     return (
       <div key={roleName}>
@@ -135,9 +150,10 @@ const Chat = ({ channelId, personId }) => {
             : 'col-12'
         }>
           <div className="card chat-app">
-            <div className="chat">
-              <ChannelHeader otherPerson={otherPerson} />
-              <MessageList messages={messages} personId={personId} />
+            <div className="chat" onScroll={handleScroll} ref={listRef}>
+            {channel?.channelType_Id === 1 ?
+              <ChannelHeader otherPerson={otherPerson} /> : ""}
+              <MessageList messages={messages} personId={personId} channelTypeId={channel?.channelType_Id} />
               <MessageInput
                 newMessage={newMessage}
                 setNewMessage={setNewMessage}

@@ -15,9 +15,12 @@
   }
   
   .chat-historychanneltype2 {
-    height: calc(100vh - 20px - 190px) !important;
-  }
+    height: calc(100vh - 24px - 190px) !important;
+}
   
+.btn-sendmessage, .btn-sendattachment{
+  line-height: 1.5 !important;
+}
   .chat-containerchanneltype2 {
     width: 100% !important;
 }
@@ -38,7 +41,7 @@
     overflow-y: auto;
     padding: 20px;
     border-bottom: 2px solid #fff;
-    height: calc(100vh - 105px - 190px);
+    height: calc(100vh - 74px - 190px);
   }
   
   .text-right {
@@ -245,6 +248,9 @@
     border-left: 1px solid #ddd;
   }
   
+  .members-list h5:first-child{
+    margin-top: 0;
+  }
   .members-list h5 {
     margin-top: 20px;
   }
