@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from './context/authContext';
 import LoginForm from './pages/Login';
 import HomePage from './pages/HomePage';
@@ -9,6 +10,7 @@ import NotFound from './pages/NotFound';
 import Error from './pages/Error';
 import ProtectedRoute from './routes/ProtectedRoute';
 import RedirectIfAuthenticated from './routes/RedirectIfAuthenticated';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
@@ -37,6 +39,7 @@ const App = () => {
           <Route path="/error" element={<Error />} />
           <Route path="*" element={<Navigate to="/not-found" />} />
         </Routes>
+        <ToastContainer />
       </Router>
     </AuthProvider>
   );

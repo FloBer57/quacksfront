@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { login, resetPasswordRequest, resetPassword } from '../services/authService';
 import { useAuth } from '../context/authContext';
+import { toast } from 'react-toastify';
 import './Login.css';
 
 const LoginForm = () => {
@@ -34,9 +35,10 @@ const LoginForm = () => {
       localStorage.setItem('token', response.token);
       localStorage.setItem('refreshToken', response.refreshToken.result);
       authLogin();
+      toast.success(`Bonjour, vous êtes bien connecté!`);
       navigate('/home');
     } catch (error) {
-      setError(error.message);
+      toast.error(`Erreur de connexion: ${error.message}`);
     }
   };
 
@@ -46,10 +48,11 @@ const LoginForm = () => {
     try {
       const response = await resetPasswordRequest(resetEmail);
       console.log('Reset password request successful:', response);
-      alert(response.message);
+      toast.success('Un lien de réinitialisation du mot de passe a été envoyé à votre adresse email.');
       setIsResetRequest(false);
     } catch (error) {
       setResetError(error.message);
+      toast.error(`Erreur lors de la demande de réinitialisation: ${error.message}`);
     }
   };
 
@@ -60,10 +63,12 @@ const LoginForm = () => {
       const token = new URLSearchParams(window.location.search).get('token'); // Get token from URL
       const response = await resetPassword({ token, newPassword });
       console.log('Password reset successful:', response);
+      toast.success('Votre mot de passe a été réinitialisé avec succès.');
       setIsResetPassword(false);
       navigate('/home');
     } catch (error) {
       setResetError(error.message);
+      toast.error(`Erreur lors de la réinitialisation du mot de passe: ${error.message}`);
     }
   };
 
