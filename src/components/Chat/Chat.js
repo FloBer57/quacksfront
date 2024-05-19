@@ -1,20 +1,28 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import './Chat.css';
-import { getMessagesByChannelId, getChannelById } from '../../services/channelService';
-import { sendMessage } from '../../services/messageService';
-import { createAttachments } from '../../services/attachmentService';
-import { getPersonsByChannelId } from '../../services/personxchannelservice';
-import { getPersonsByRoleInChannel } from '../../services/channelpersonrolexpersonxchannelservice';
-import signalRService from '../../signalr-connection';
-import MessageList from './MessageList';
-import MessageInput from './MessageInput';
-import ChannelHeader from './ChannelHeader';
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "./Chat.css";
+import {
+  getMessagesByChannelId,
+  getChannelById,
+} from "../../services/channelService";
+import { sendMessage } from "../../services/messageService";
+import { createAttachments } from "../../services/attachmentService";
+import {
+  getPersonsByChannelId,
+  deleteAssociation,
+} from "../../services/personxchannelservice";
+import { getPersonsByRoleInChannel } from "../../services/channelpersonrolexpersonxchannelservice";
+import signalRService from "../../signalr-connection";
+import MessageList from "./MessageList";
+import MessageInput from "./MessageInput";
+import ChannelHeader from "./ChannelHeader";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const Chat = ({ channelId, personId }) => {
+const Chat = ({ channelId, personId, onChannelLeft }) => {
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [files, setFiles] = useState([]);
   const [otherPerson, setOtherPerson] = useState(null);
   const [channel, setChannel] = useState(null);
@@ -35,7 +43,7 @@ const Chat = ({ channelId, personId }) => {
           setHasMore(false); // no more messages to load
         }
       } catch (error) {
-        console.error('Error fetching messages:', error);
+        console.error("Error fetching messages:", error);
       }
     };
 
@@ -52,7 +60,7 @@ const Chat = ({ channelId, personId }) => {
           fetchMembersByRole(channelId);
         }
       } catch (error) {
-        console.error('Error fetching channel or persons:', error);
+        console.error("Error fetching channel or persons:", error);
       }
     };
 
@@ -63,9 +71,18 @@ const Chat = ({ channelId, personId }) => {
         setAdminMembers(fetchedAdminMembers);
         setUserMembers(fetchedUserMembers);
       } catch (error) {
-        console.error('Error fetching members by role:', error);
+        console.error("Error fetching members by role:", error);
       }
     };
+
+    // Reset states when channelId changes
+    setMessages([]);
+    setPage(1);
+    setHasMore(true);
+    setOtherPerson(null);
+    setChannel(null);
+    setAdminMembers([]);
+    setUserMembers([]);
 
     fetchMessages(page);
     fetchChannel();
@@ -74,14 +91,21 @@ const Chat = ({ channelId, personId }) => {
   useEffect(() => {
     if (!isSubscribed.current) {
       signalRService.onMessageReceived((userId, message) => {
-        setMessages((prevMessages) => [...prevMessages, { person_Id: userId, message_Text: message, message_Date: new Date().toISOString() }]);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            person_Id: userId,
+            message_Text: message,
+            message_Date: new Date().toISOString(),
+          },
+        ]);
       });
       isSubscribed.current = true;
     }
   }, []);
 
   const handleSendMessage = async () => {
-    if (newMessage.trim() === '' && files.length === 0) return;
+    if (newMessage.trim() === "" && files.length === 0) return;
 
     const messageDto = {
       MessageText: newMessage,
@@ -103,14 +127,23 @@ const Chat = ({ channelId, personId }) => {
       }
 
       signalRService.sendMessage(personId, newMessage);
-      setNewMessage('');
+      setNewMessage("");
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
     }
   };
 
   const handleFileChange = (event) => {
     setFiles([...event.target.files]);
+  };
+
+  const handleLeaveChannel = async () => {
+    try {
+      await deleteAssociation(personId, channelId);
+      onChannelLeft(channelId, channel.channel_Name);
+    } catch (error) {
+      console.error("Error leaving channel:", error);
+    }
   };
 
   const handleScroll = useCallback(() => {
@@ -127,8 +160,15 @@ const Chat = ({ channelId, personId }) => {
         <h5>{roleName}</h5>
         {members.map((member) => (
           <div key={member.person_Id} className="member-item">
-            <img src={`https://localhost:7019/${member.person_ProfilPicturePath}`} alt="avatar" width="30" height="30" />
-            <span>{member.person_FirstName} {member.person_LastName}</span>
+            <img
+              src={`https://localhost:7019/${member.person_ProfilPicturePath}`}
+              alt="avatar"
+              width="30"
+              height="30"
+            />
+            <span>
+              {member.person_FirstName} {member.person_LastName}
+            </span>
           </div>
         ))}
       </div>
@@ -139,21 +179,24 @@ const Chat = ({ channelId, personId }) => {
     <div
       className={
         channel?.channelType_Id === 2
-          ? 'container-fluid chat-container chat-containerchanneltype2'
-          : 'container-fluid chat-container'
+          ? "container-fluid chat-container chat-containerchanneltype2"
+          : "container-fluid chat-container"
       }
     >
       <div className="row clearfix">
-        <div className={
-          channel?.channelType_Id === 2
-            ? 'col-10'
-            : 'col-12'
-        }>
+        <div className={channel?.channelType_Id === 2 ? "col-10" : "col-12"}>
           <div className="card chat-app">
             <div className="chat" onScroll={handleScroll} ref={listRef}>
-            {channel?.channelType_Id === 1 ?
-              <ChannelHeader otherPerson={otherPerson} /> : ""}
-              <MessageList messages={messages} personId={personId} channelTypeId={channel?.channelType_Id} />
+              {channel?.channelType_Id === 1 ? (
+                <ChannelHeader otherPerson={otherPerson} />
+              ) : (
+                ""
+              )}
+              <MessageList
+                messages={messages}
+                personId={personId}
+                channelTypeId={channel?.channelType_Id}
+              />
               <MessageInput
                 newMessage={newMessage}
                 setNewMessage={setNewMessage}
@@ -165,8 +208,14 @@ const Chat = ({ channelId, personId }) => {
         </div>
         {channel?.channelType_Id === 2 && (
           <div className="col-2 members-list">
-            {renderMembers(adminMembers, 'Administrateur')}
-            {renderMembers(userMembers, 'Utilisateur')}
+            {renderMembers(adminMembers, "Administrateur")}
+            {renderMembers(userMembers, "Utilisateur")}
+            <button
+              onClick={handleLeaveChannel}
+              className="btn btn-danger mt-2"
+            >
+              Quitter le canal
+            </button>
           </div>
         )}
       </div>

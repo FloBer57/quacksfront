@@ -1,10 +1,9 @@
-// src/context/personXchannelContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import { getChannelsByPersonId } from '../services/personxchannelservice';
 
-export const personXchannelContext = createContext();
+const personXchannelContext = createContext();
 
-export const PersonXchannelProvider = ({ children, personId }) => {
+const PersonXchannelProvider = ({ personId, children }) => {
   const [channels, setChannels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,19 +13,20 @@ export const PersonXchannelProvider = ({ children, personId }) => {
       try {
         const data = await getChannelsByPersonId(personId);
         setChannels(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
         setLoading(false);
       }
     };
-
     fetchChannels();
   }, [personId]);
 
   return (
-    <personXchannelContext.Provider value={{ channels, loading, error }}>
+    <personXchannelContext.Provider value={{ channels, loading, error, setChannels }}>
       {children}
     </personXchannelContext.Provider>
   );
 };
+
+export { personXchannelContext, PersonXchannelProvider };

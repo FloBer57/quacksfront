@@ -1,6 +1,8 @@
-import { get } from '../api/agent';
+import { get,post } from '../api/agent';
 const getPersonsByRoleInChannel = async (channelId, roleId) => {
     return await get(`ChannelPersonRoleXPersonXChannel/channels/${channelId}/roles/${roleId}/persons`);
   };
 
-  export {getPersonsByRoleInChannel};
+  const createRoleAssociation = (data) => post('/ChannelPersonRoleXPersonXChannel', data);
+
+  export {getPersonsByRoleInChannel, createRoleAssociation};

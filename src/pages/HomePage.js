@@ -1,16 +1,18 @@
-// src/pages/HomePage.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Chat from '../components/Chat/Chat';
 import Accueil from '../components/Acceuil';
 import ChannelbarWithProvider from '../components/Channelbar';
-import { getUserIdFromToken, getUserRoleFromToken } from '../services/authService';
+import { getUserIdFromToken } from '../services/authService';
 import { getPersonById } from '../services/personService';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const HomePage = () => {
   const [person, setPerson] = useState(null);
   const [selectedChannelId, setSelectedChannelId] = useState(null);
+  const [channels, setChannels] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,6 +39,16 @@ const HomePage = () => {
     setSelectedChannelId(null);
   };
 
+  const handleChannelLeft = (channelId, channelName) => {
+    toast.info(`Vous venez de quitter le channel ${channelName}`);
+    setChannels((prevChannels) => prevChannels.filter(channel => channel.channel_Id !== channelId));
+    setSelectedChannelId(null);
+  };
+
+  const handleCreateChannel = (newChannel) => {
+    setChannels((prevChannels) => [...prevChannels, newChannel]);
+  };
+
   if (person === null) {
     return <div>Loading...</div>; // or any other loading indicator
   }
@@ -44,8 +56,19 @@ const HomePage = () => {
   return (
     <div className="d-flex flex-column">
       <Navbar person={person} />
-      {selectedChannelId ? <Chat channelId={selectedChannelId} personId={person.person_Id} /> : <Accueil person={person} />}
-      <ChannelbarWithProvider personId={person.person_Id} onChannelClick={handleChannelClick} onLogoClick={handleLogoClick} />
+      {selectedChannelId ? 
+        <Chat channelId={selectedChannelId} personId={person.person_Id} onChannelLeft={handleChannelLeft} /> 
+        : 
+        <Accueil person={person} />
+      }
+      <ChannelbarWithProvider 
+        personId={person.person_Id} 
+        onChannelClick={handleChannelClick} 
+        onLogoClick={handleLogoClick} 
+        channels={channels}
+        handleCreateChannel={handleCreateChannel}
+        handleChannelLeft={handleChannelLeft}
+      />
     </div>
   );
 };
