@@ -2,14 +2,10 @@ import { post } from '../api/agent';
 import {jwtDecode} from 'jwt-decode';
 
 const login = (credentials) => post('/Authentication/login', credentials);
-
 const resetPasswordRequest = (email) => post('/Authentication/reset-password-request', { email });
-
 const resetPassword = (data) => post('/Authentication/reset-password', data);
-
 const refreshToken = (data) => post('/Authentication/refresh', data);
-
-const revokeRefreshToken = (token) => post('/Authentication/revoke', { token });
+const revokeRefreshToken = (refreshToken) => post('/Authentication/revoke', { refreshToken }); 
 
 const getUserIdFromToken = () => {
   const token = localStorage.getItem('token');

@@ -3,6 +3,9 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { useNavigate } from "react-router-dom";
+import { revokeRefreshToken } from '../services/authService';
+import { useAuth } from '../context/authContext';
 import "./Navbar.css";
 
 const CustomDropdownToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -20,11 +23,25 @@ const CustomDropdownToggle = React.forwardRef(({ children, onClick }, ref) => (
 ));
 
 const Navbar = ({ person }) => {
-  console.log("Person in Navbar component:", person); // Log the person data
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleClose = () => setShowOffcanvas(false);
   const toggleShow = () => setShowOffcanvas((s) => !s);
+
+  const handleLogout = async () => {
+    const refreshToken = localStorage.getItem('refreshToken'); // Utilisez le refresh token
+    try {
+      await revokeRefreshToken(refreshToken); // Passez le refresh token
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to revoke token:', error);
+    }
+  };
 
   return (
     <>
@@ -91,7 +108,22 @@ const Navbar = ({ person }) => {
               </a>
             </li>
             <li className="nav-item dropdown me-3 me-lg-1">
+              <Dropdown>
+                <Dropdown.Toggle
+                  as={CustomDropdownToggle}
+                  id="dropdown-custom-components"
+                >
                   <i className="fas fa-cog fa-lg"></i>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="dropdown-menu">
+                  <Dropdown.Item href="#/action-1">Mon compte</Dropdown.Item>
+                  {person.personRole_Id === 2 ? (
+                    <Dropdown.Item href="#/action-2">Administrateur</Dropdown.Item>
+                  ) : null}
+                  <Dropdown.Item onClick={handleLogout}>Déconnexion</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </li>
           </ul>
           {/* Right elements */}

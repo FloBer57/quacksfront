@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import Chat from '../components/Chat/Chat';
 import Accueil from '../components/Acceuil';
 import ChannelbarWithProvider from '../components/Channelbar';
-import { getUserIdFromToken } from '../services/authService';
+import { getUserIdFromToken, getUserRoleFromToken } from '../services/authService';
 import { getPersonById } from '../services/personService';
 
 const HomePage = () => {
