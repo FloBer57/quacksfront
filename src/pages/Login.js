@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { login, resetPasswordRequest, resetPassword } from '../services/authService';
-import { useAuth } from '../context/authContext';
-import { updatePerson } from '../services/personService';
+import { login, resetPasswordRequest, resetPassword , getUserIdFromToken} from '../services/authService';
+import { useAuth} from '../context/authContext';
+import { getPersonById, updatePerson } from '../services/personService';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Assurez-vous que le CSS de react-toastify est importé
 import './Login.css';
@@ -36,7 +36,21 @@ const LoginForm = () => {
       authLogin();
       toast.success(`Bonjour, vous êtes bien connecté!`);
       navigate('/home');
-      /* await updatePerson(response.user.id, { StatutId: 5 }); A AJOUTER ZEBI*/
+      const id = getUserIdFromToken(response.token); // Assurez-vous d'obtenir l'ID de l'utilisateur à partir du token
+
+      if (id) {
+        try {
+          const personData = await getPersonById(id);
+          if (personData) {
+            console.log(personData);
+            await updatePerson(personData.person_Id, { StatutId: 5 });
+            console.log(personData.person_Id);
+            console.log('Person status updated successfully');
+          }
+        } catch (error) {
+          console.error("Error updating person status:", error);
+        }
+      }
     } catch (error) {
       toast.error(`Erreur de connexion: ${error.message}`);
     }
