@@ -5,7 +5,6 @@ import "./Acceuil.css";
 const url = "https://localhost:7019/";
 
 const Accueil = ({ person }) => {
-  console.log("Person in Accueil component:", person); // Log the person data
 
   if (!person) {
     return <div>Loading person data...</div>;

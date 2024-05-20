@@ -6,6 +6,7 @@ import Accueil from '../components/Acceuil';
 import ChannelbarWithProvider from '../components/Channelbar';
 import { getUserIdFromToken } from '../services/authService';
 import { getPersonById } from '../services/personService';
+import { getChannelsByPersonId } from '../services/personxchannelservice'; // Importer le service pour récupérer les canaux
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -22,6 +23,9 @@ const HomePage = () => {
         try {
           const personData = await getPersonById(id, navigate); // Pass navigate to the service
           setPerson(personData);
+
+          const personChannels = await getChannelsByPersonId(id);
+          setChannels(personChannels);
         } catch (error) {
           console.error("Error fetching person data:", error);
         }

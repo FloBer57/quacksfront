@@ -44,6 +44,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
         }
       } catch (error) {
         console.error("Error fetching messages:", error);
+        toast.error(error.message);
       }
     };
 
@@ -61,6 +62,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
         }
       } catch (error) {
         console.error("Error fetching channel or persons:", error);
+        toast.error(error.message);
       }
     };
 
@@ -72,6 +74,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
         setUserMembers(fetchedUserMembers);
       } catch (error) {
         console.error("Error fetching members by role:", error);
+        toast.error(error.message);
       }
     };
 
@@ -130,6 +133,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
       setNewMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
+      toast.error(error.message);
     }
   };
 
@@ -143,6 +147,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
       onChannelLeft(channelId, channel.channel_Name);
     } catch (error) {
       console.error("Error leaving channel:", error);
+      toast.error(error.message);
     }
   };
 

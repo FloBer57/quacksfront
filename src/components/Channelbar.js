@@ -24,18 +24,24 @@ const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCre
 
           {/* Icônes centrées */}
           <ul className="navbar-nav flex-row justify-content-center discordimage">
-            {channels.map((channel) => (
-              <li key={channel.channel_Id} className="nav-item me-3 me-lg-1">
-                <a className="nav-link" href="#" onClick={() => onChannelClick(channel.channel_Id)}>
-                  <span className="position-relative">
-                    <img src={`${url}${channel.channel_ImagePath}`} className="rounded-circle iconcircle" height="40" alt={channel.channel_Name} />
-                    <span className="badge position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                      147
-                    </span>
-                  </span>
-                </a>
+            {channels.length === 0 ? (
+              <li className="nav-item me-3 me-lg-1">
+                <p className="nav-link">Encore 0 channels!</p>
               </li>
-            ))}
+            ) : (
+              channels.map((channel) => (
+                <li key={channel.channel_Id} className="nav-item me-3 me-lg-1">
+                  <a className="nav-link" href="#" onClick={() => onChannelClick(channel.channel_Id)}>
+                    <span className="position-relative">
+                      <img src={`${url}${channel.channel_ImagePath}`} className="rounded-circle iconcircle" height="40" alt={channel.channel_Name} />
+                      <span className="badge position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                        147
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ))
+            )}
           </ul>
 
           {/* Bouton + à droite */}

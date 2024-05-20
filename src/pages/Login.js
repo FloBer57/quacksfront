@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { login, resetPasswordRequest, resetPassword } from '../services/authService';
 import { useAuth } from '../context/authContext';
+import { updatePerson } from '../services/personService';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Assurez-vous que le CSS de react-toastify est importé
 import './Login.css';
 
 const LoginForm = () => {
@@ -10,8 +12,6 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [resetEmail, setResetEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [error, setError] = useState(null);
-  const [resetError, setResetError] = useState(null);
   const [isResetRequest, setIsResetRequest] = useState(false);
   const [isResetPassword, setIsResetPassword] = useState(false);
   const navigate = useNavigate();
@@ -28,12 +28,12 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Clear previous errors
     try {
       const response = await login({ email, password });
       console.log('Login successful:', response);
       localStorage.setItem('token', response.token);
       localStorage.setItem('refreshToken', response.refreshToken.result);
+      await updatePerson(response.user.id, { StatutId: 5 }); // Mettre à jour le statut à "En ligne"
       authLogin();
       toast.success(`Bonjour, vous êtes bien connecté!`);
       navigate('/home');
@@ -44,21 +44,18 @@ const LoginForm = () => {
 
   const handleResetRequest = async (e) => {
     e.preventDefault();
-    setResetError(null); // Clear previous errors
     try {
       const response = await resetPasswordRequest(resetEmail);
       console.log('Reset password request successful:', response);
       toast.success('Un lien de réinitialisation du mot de passe a été envoyé à votre adresse email.');
       setIsResetRequest(false);
     } catch (error) {
-      setResetError(error.message);
       toast.error(`Erreur lors de la demande de réinitialisation: ${error.message}`);
     }
   };
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    setResetError(null); // Clear previous errors
     try {
       const token = new URLSearchParams(window.location.search).get('token'); // Get token from URL
       const response = await resetPassword({ token, newPassword });
@@ -67,7 +64,6 @@ const LoginForm = () => {
       setIsResetPassword(false);
       navigate('/home');
     } catch (error) {
-      setResetError(error.message);
       toast.error(`Erreur lors de la réinitialisation du mot de passe: ${error.message}`);
     }
   };
@@ -186,8 +182,6 @@ const LoginForm = () => {
                 </div>
               </form>
             )}
-            {error && <div className="alert alert-danger">{error}</div>}
-            {resetError && <div className="alert alert-danger">{resetError}</div>}
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-// src/services/personxchannelservice.js
 import { get, post, del } from '../api/agent';
 
 const getChannelsByPersonId = async (personId) => {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { toast } from "react-toastify";
 import { getAllPersons } from '../services/personService';
 import { createChannel } from '../services/channelService';
 import { createAssociation } from '../services/personxchannelservice';
@@ -13,7 +14,6 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
   const [channelDescription, setChannelDescription] = useState('');
   const [selectedPersons, setSelectedPersons] = useState([creatorId]); // Ajouter le créateur par défaut
   const [persons, setPersons] = useState([]);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPersons = async () => {
@@ -21,7 +21,7 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
         const data = await getAllPersons();
         setPersons(data);
       } catch (error) {
-        setError(error.message);
+        toast.error(error.message);
       }
     };
     fetchPersons();
@@ -38,18 +38,25 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
 
       // Créez les associations entre le canal et les personnes sélectionnées
       await Promise.all(selectedPersons.map(personId => {
-        return createAssociation({ PersonId: personId, ChannelId: createdChannel.channel_Id, ChannelPersonRole_Id: 2 });
+        const role = personId === creatorId ? 1 : 2; // Le créateur est administrateur, les autres sont utilisateurs
+        return createAssociation({ PersonId: personId, ChannelId: createdChannel.channel_Id, ChannelPersonRole_Id: role });
       }));
 
       // Créez les rôles de canal par défaut pour les personnes sélectionnées
       await Promise.all(selectedPersons.map(personId => {
-        return createRoleAssociation({ PersonId: personId, ChannelId: createdChannel.channel_Id, ChannelPersonRole_Id: 2 });
+        const role = personId === creatorId ? 1 : 2; // Le créateur est administrateur, les autres sont utilisateurs
+        return createRoleAssociation({ PersonId: personId, ChannelId: createdChannel.channel_Id, ChannelPersonRole_Id: role });
       }));
 
       onChannelCreated(createdChannel);
+      toast.success(`Création du channel ${channelName} réussie !`);
+      // Réinitialiser les états après la création du canal
+      setChannelName('');
+      setChannelDescription('');
+      setSelectedPersons([creatorId]);
       handleClose();
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -128,8 +135,6 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
               })}
             </ul>
           </div>
-
-          {error && <p className="text-danger mt-3">{error}</p>}
         </Form>
       </Modal.Body>
       <Modal.Footer>

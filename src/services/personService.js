@@ -1,4 +1,3 @@
-// src/services/personService.js
 import { get, post, put, del } from '../api/agent';
 
 const API_URL = '/Person';
