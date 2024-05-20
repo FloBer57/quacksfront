@@ -33,10 +33,10 @@ const LoginForm = () => {
       console.log('Login successful:', response);
       localStorage.setItem('token', response.token);
       localStorage.setItem('refreshToken', response.refreshToken.result);
-      await updatePerson(response.user.id, { StatutId: 5 }); // Mettre à jour le statut à "En ligne"
       authLogin();
       toast.success(`Bonjour, vous êtes bien connecté!`);
       navigate('/home');
+      /* await updatePerson(response.user.id, { StatutId: 5 }); A AJOUTER ZEBI*/
     } catch (error) {
       toast.error(`Erreur de connexion: ${error.message}`);
     }
