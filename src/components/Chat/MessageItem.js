@@ -2,9 +2,17 @@ import React from 'react';
 
 const MessageItem = ({ message, personId }) => {
   return (
-    <li className="clearfix">
-      <div className="message-data">
-        <span className="message-data-time">
+    <li className='clearfix'>
+      <div className={
+          message.person_Id !== personId
+            ? 'message-data'
+            : 'message-data message-data-other'
+        }>
+        <span className={
+          message.person_Id !== personId
+            ? 'message-data-time'
+            : 'message-data-time message-data-time-other'
+        }>
           {new Date(message.message_Date).toLocaleString()}
         </span>
       </div>

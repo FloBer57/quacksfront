@@ -14,6 +14,10 @@
     display: none !important;
   }
   
+.message-data-other{
+  display: flex;
+  flex-direction: row-reverse;
+}
   .chat-historychanneltype2 {
     height: calc(100vh - 24px - 190px) !important;
 }
@@ -144,9 +148,14 @@
     text-align: right;
   }
   
+  .message-data-time-other{
+    padding-right: 6px;
+    padding-left: 0 !important;
+  }
+
   .chat .chat-history .other-message:after {
     border-bottom-color: #e8f1f3;
-    left: 93%;
+    left: 50%;
   }
   
   .receiver-profil {

@@ -4,7 +4,7 @@ import { login, resetPasswordRequest, resetPassword , getUserIdFromToken} from '
 import { useAuth} from '../context/authContext';
 import { getPersonById, updatePerson } from '../services/personService';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Assurez-vous que le CSS de react-toastify est importé
+import 'react-toastify/dist/ReactToastify.css'; 
 import './Login.css';
 
 const LoginForm = () => {
