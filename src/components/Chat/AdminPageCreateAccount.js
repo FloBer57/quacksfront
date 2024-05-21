@@ -1,152 +1,149 @@
-import React, { useEffect, useState } from 'react';
-import { Dropdown, Table, Button } from 'react-bootstrap';
-import { getAllPersons, updatePerson, deletePerson } from '../../services/personService';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBCard,
+  MDBCardBody,
+  MDBCardImage,
+  MDBInput,
+  MDBIcon
+} from 'mdb-react-ui-kit';
+import { createPerson } from '../../services/personService';
 import { getJobTitles } from '../../services/jobTitleService';
-import { getUserRoles } from '../../services/personRoles';
-import { toast } from "react-toastify";
-import './AdminPageUserList.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './AdminPageCreateAccount.css';
+import Papa from 'papaparse';
 
-const AdminPageUserList = () => {
-  const [users, setUsers] = useState([]);
+const AdminPageCreateAccount = () => {
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [jobTitleId, setJobTitleId] = useState('');
   const [jobTitles, setJobTitles] = useState([]);
-  const [userRoles, setUserRoles] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUsersAndJobTitlesAndRoles = async () => {
+    const fetchJobTitles = async () => {
       try {
-        const usersData = await getAllPersons();
         const jobTitlesData = await getJobTitles();
-        const userRolesData = await getUserRoles();
-        console.log('Users:', usersData);
-        console.log('Job Titles:', jobTitlesData);
-        console.log('User Roles:', userRolesData);
-        setUsers(usersData);
         setJobTitles(jobTitlesData);
-        setUserRoles(userRolesData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching job titles:', error);
       }
     };
 
-    fetchUsersAndJobTitlesAndRoles();
+    fetchJobTitles();
   }, []);
 
-  const getJobTitleName = (userJobTitleId) => {
-    if (!jobTitles || jobTitles.length === 0) {
-      return 'Aucun titre';
-    }
-    const jobTitle = jobTitles.find((title) => title.personJob_TitleId === userJobTitleId);
-    return jobTitle ? jobTitle.personJobTitle_Name : 'Aucun titre';
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const createPersonDTO = {
+      Email: email,
+      FirstName: firstName,
+      LastName: lastName,
+      PhoneNumber: phoneNumber,
+      JobTitle_Id: jobTitleId,
+    };
 
-  const getUserRoleName = (userRoleId) => {
-    if (!userRoles || userRoles.length === 0) {
-      return 'Aucun titre';
-    }
-    const userRole = userRoles.find((role) => role.personRole_Id === userRoleId);
-    return userRole ? userRole.personRole_Name : 'Aucun titre';
-  };
-
-  const handleJobTitleChange = async (userId, newJobTitleId) => {
     try {
-      await updatePerson(userId, { personJobTitle_Id: newJobTitleId });
-      console.log('Job title successfully updated for user:', userId, newJobTitleId);
-      toast.success("Le Job à bien été changé!");
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.person_Id === userId ? { ...user, personJobTitle_Id: newJobTitleId } : user
-        )
-      );
+      await createPerson(createPersonDTO);
+      toast.success('Utilisateur créé avec succès!');
+      setEmail('');
+      setFirstName('');
+      setLastName('');
+      setPhoneNumber('');
+      setJobTitleId('');
     } catch (error) {
-      console.error('Error updating job title:', error);
+      toast.error(`Erreur lors de la création de l'utilisateur: ${error.message}`);
     }
   };
 
-  const handleUserRoleChange = async (userId, newRoleId) => {
-    try {
-      await updatePerson(userId, { personRole_Id: newRoleId });
-      console.log('User role successfully updated for user:', userId, newRoleId);
-      toast.success("Le Role à bien été changé!");
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.person_Id === userId ? { ...user, personRole_Id: newRoleId } : user
-        )
-      );
-    } catch (error) {
-      console.error('Error updating user role:', error);
-    }
-  };
-
-  const handleDeletePerson = async (userId) => {
-    try {
-      await deletePerson(userId);
-      console.log('User successfully deleted:', userId);
-      toast.success("L'utilisateur a bien été supprimé!");
-      setUsers((prevUsers) => prevUsers.filter((user) => user.person_Id !== userId));
-    } catch (error) {
-      console.error('Error deleting user:', error);
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      Papa.parse(file, {
+        header: true,
+        complete: async (results) => {
+          const users = results.data;
+          for (const user of users) {
+            const createPersonDTO = {
+              Email: user.Email,
+              FirstName: user.FirstName,
+              LastName: user.LastName,
+              PhoneNumber: user.PhoneNumber,
+              JobTitle_Id: jobTitles.find(job => job.personJobTitle_Name === user.JobTitle)?.personJob_TitleId || '',
+            };
+            try {
+              await createPerson(createPersonDTO);
+            } catch (error) {
+              toast.error(`Erreur lors de la création de l'utilisateur: ${error.message}`);
+            }
+          }
+          toast.success('Tous les utilisateurs ont été créés avec succès à partir du CSV!');
+        },
+      });
     }
   };
 
   return (
-    <div className="p-3 admin-users-list" style={{ flex: 1 }}>
-      <h2>Liste des Utilisateurs</h2>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Intitulé du poste</th>
-            <th>Rôle</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.person_Id}>
-              <td>{user.person_FirstName} {user.person_LastName}</td>
-              <td>
-                <Dropdown>
-                  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                    {getJobTitleName(user.personJobTitle_Id)}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
+    <MDBContainer fluid>
+      <MDBCard className='text-black m-5' style={{ borderRadius: '25px' }}>
+        <MDBCardBody>
+          <MDBRow>
+            <MDBCol md='10' lg='6' className='order-2 order-lg-1 d-flex flex-column align-items-center'>
+              <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Créer un utilisateur</p>
+              <form onSubmit={handleSubmit} className='w-100'>
+                <div className="d-flex flex-row align-items-center mb-4">
+                  <MDBIcon fas icon="user me-3" size='lg' />
+                  <MDBInput label='Prénom' id='firstName' type='text' className='w-100' value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                </div>
+                <div className="d-flex flex-row align-items-center mb-4">
+                  <MDBIcon fas icon="user me-3" size='lg' />
+                  <MDBInput label='Nom' id='lastName' type='text' className='w-100' value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+                </div>
+                <div className="d-flex flex-row align-items-center mb-4">
+                  <MDBIcon fas icon="envelope me-3" size='lg' />
+                  <MDBInput label='Email' id='email' type='email' className='w-100' value={email} onChange={(e) => setEmail(e.target.value)} required />
+                </div>
+                <div className="d-flex flex-row align-items-center mb-4">
+                  <MDBIcon fas icon="phone me-3" size='lg' />
+                  <MDBInput label='Numéro de téléphone' id='phoneNumber' type='text' className='w-100' value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                </div>
+                <div className="d-flex flex-row align-items-center mb-4">
+                  <MDBIcon fas icon="briefcase me-3" size='lg' />
+                  <select className="form-select" value={jobTitleId} onChange={(e) => setJobTitleId(e.target.value)} required>
+                    <option value="" disabled>Choisir un intitulé de poste</option>
                     {jobTitles.map((jobTitle) => (
-                      <Dropdown.Item
-                        key={`jobTitle-${jobTitle.personJob_TitleId}`}
-                        onClick={() => handleJobTitleChange(user.person_Id, jobTitle.personJob_TitleId)}
-                      >
+                      <option key={jobTitle.personJob_TitleId} value={jobTitle.personJob_TitleId}>
                         {jobTitle.personJobTitle_Name}
-                      </Dropdown.Item>
+                      </option>
                     ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </td>
-              <td>
-                <Dropdown>
-                  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                    {getUserRoleName(user.personRole_Id)}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {userRoles.map((role) => (
-                      <Dropdown.Item
-                        key={`role-${role.personRole_Id}`}
-                        onClick={() => handleUserRoleChange(user.person_Id, role.personRole_Id)}
-                      >
-                        {role.personRole_Name}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </td>
-              <td>
-                <Button variant="danger" onClick={() => handleDeletePerson(user.person_Id)}>Supprimer</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
+                  </select>
+                </div>
+                <MDBBtn className='mb-4' size='lg' type='submit'>Créer</MDBBtn>
+              </form>
+              <p className="text-center h5 fw-bold mb-3">Ou</p>
+              <div className="d-flex flex-row align-items-center mb-4">
+                <MDBIcon fas icon="file-csv me-3" size='lg' />
+                <input type="file" accept=".csv" onChange={handleFileUpload} />
+              </div>
+              <a href="/path-to-csv-template.csv" download>
+                <MDBBtn className='mb-4' size='lg'>Télécharger le modèle CSV</MDBBtn>
+              </a>
+            </MDBCol>
+            <MDBCol md='10' lg='6' className='order-1 order-lg-2 d-flex align-items-center'>
+              <MDBCardImage src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp' fluid />
+            </MDBCol>
+          </MDBRow>
+        </MDBCardBody>
+      </MDBCard>
+    </MDBContainer>
   );
 };
 
-export default AdminPageUserList;
+export default AdminPageCreateAccount;
