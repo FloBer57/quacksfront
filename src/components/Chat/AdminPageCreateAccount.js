@@ -43,11 +43,11 @@ const AdminPageCreateAccount = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const createPersonDTO = {
-      Email: email,
-      FirstName: firstName,
-      LastName: lastName,
-      PhoneNumber: phoneNumber,
-      JobTitle_Id: jobTitleId,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+      jobTitle_Id: jobTitleId,
     };
 
     try {
@@ -72,11 +72,11 @@ const AdminPageCreateAccount = () => {
           const users = results.data;
           for (const user of users) {
             const createPersonDTO = {
-              Email: user.Email,
-              FirstName: user.FirstName,
-              LastName: user.LastName,
-              PhoneNumber: user.PhoneNumber,
-              JobTitle_Id: jobTitles.find(job => job.personJobTitle_Name === user.JobTitle)?.personJob_TitleId || '',
+              email: user.FirstName + ' ' + user.LastName,
+              firstName: user.FirstName,
+              lastName: user.LastName,
+              phoneNumber: user.PhoneNumber,
+              jobTitle_Id: jobTitles.find(job => job.personJobTitle_Name === user.JobTitle)?.personJob_TitleId || '',
             };
             try {
               await createPerson(createPersonDTO);
@@ -92,7 +92,7 @@ const AdminPageCreateAccount = () => {
 
   return (
     <MDBContainer fluid>
-      <MDBCard className='text-black m-5' style={{ borderRadius: '25px' }}>
+      <MDBCard className='text-black m-4' style={{ borderRadius: '25px' }}>
         <MDBCardBody>
           <MDBRow>
             <MDBCol md='10' lg='6' className='order-2 order-lg-1 d-flex flex-column align-items-center'>
@@ -137,7 +137,7 @@ const AdminPageCreateAccount = () => {
               </a>
             </MDBCol>
             <MDBCol md='10' lg='6' className='order-1 order-lg-2 d-flex align-items-center'>
-              <MDBCardImage src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp' fluid />
+              <MDBCardImage src='https://localhost:7019/Image/WebsiteNeeds/QuacksRegister.png' fluid />
             </MDBCol>
           </MDBRow>
         </MDBCardBody>

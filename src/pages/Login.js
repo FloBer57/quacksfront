@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { login, resetPasswordRequest, resetPassword , getUserIdFromToken} from '../services/authService';
-import { useAuth} from '../context/authContext';
+import { useAuth } from '../context/authContext';
 import { getPersonById, updatePerson } from '../services/personService';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -30,25 +30,32 @@ const LoginForm = () => {
     e.preventDefault();
     try {
       const response = await login({ email, password });
+      if (response.Message === "Temporary password. A reset link has been sent to your email.") {
+        toast.info('Mot de passe temporaire. Un lien de réinitialisation a été envoyé à votre adresse e-mail.');
+        return;
+      }
+
       console.log('Login successful:', response);
       localStorage.setItem('token', response.token);
       localStorage.setItem('refreshToken', response.refreshToken.result);
-      authLogin();
-      toast.success(`Bonjour, vous êtes bien connecté!`);
-      navigate('/home');
-      const id = getUserIdFromToken(response.token); // Assurez-vous d'obtenir l'ID de l'utilisateur à partir du token
+      const id = getUserIdFromToken(response.token);
 
       if (id) {
         try {
           const personData = await getPersonById(id);
           if (personData) {
-            console.log(personData);
-            await updatePerson(personData.person_Id, { StatutId: 5 });
-            console.log(personData.person_Id);
-            console.log('Person status updated successfully');
+            if (personData.Person_IsTemporaryPassword) {
+              setIsResetPassword(true);
+            } else {
+              authLogin();
+              toast.success(`Bonjour, vous êtes bien connecté!`);
+              navigate('/home');
+              await updatePerson(personData.person_Id, { StatutId: 5 });
+              console.log('Person status updated successfully');
+            }
           }
         } catch (error) {
-          console.error("Error updating person status:", error);
+          console.error("Error retrieving person data:", error);
         }
       }
     } catch (error) {
@@ -71,12 +78,12 @@ const LoginForm = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
-      const token = new URLSearchParams(window.location.search).get('token'); // Get token from URL
+      const token = new URLSearchParams(window.location.search).get('token');
       const response = await resetPassword({ token, newPassword });
       console.log('Password reset successful:', response);
       toast.success('Votre mot de passe a été réinitialisé avec succès.');
       setIsResetPassword(false);
-      navigate('/home');
+      navigate('/login');
     } catch (error) {
       toast.error(`Erreur lors de la réinitialisation du mot de passe: ${error.message}`);
     }
