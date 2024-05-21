@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -12,7 +12,7 @@ import "./Navbar.css";
 
 const CustomDropdownToggle = React.forwardRef(({ children, onClick, className }, ref) => (
   <a
-    href="#"
+    href="!#"
     ref={ref}
     onClick={(e) => {
       e.preventDefault();
@@ -30,19 +30,19 @@ const Navbar = ({ person }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const statusList = [
+  const statusList = useMemo(() => [
     { PersonStatut_Id: 1, PersonStatut_Name: 'Hors ligne' },
     { PersonStatut_Id: 2, PersonStatut_Name: 'Actif' },
     { PersonStatut_Id: 3, PersonStatut_Name: 'Inactif' },
     { PersonStatut_Id: 4, PersonStatut_Name: 'Occupé' },
     { PersonStatut_Id: 5, PersonStatut_Name: 'En ligne' }
-  ];
+  ], []);
 
   useEffect(() => {
     const status = statusList.find(status => status.PersonStatut_Id === person.personStatut_Id);
     setCurrentStatus(status);
     console.log("Initial status set to:", status);
-  }, [person.personStatut_Id]);
+  }, [person.personStatut_Id, statusList]);
 
   const handleClose = () => setShowOffcanvas(false);
   const toggleShow = () => setShowOffcanvas((s) => !s);
@@ -96,7 +96,7 @@ const Navbar = ({ person }) => {
           <div className="d-flex">
             <a
               className="nav-link dropdown-toggle hidden-arrow"
-              href="#"
+              href="!#"
               id="navbarDropdownMenuLink"
               role="button"
               aria-expanded="false"
@@ -134,7 +134,7 @@ const Navbar = ({ person }) => {
             <li className="nav-item me-3 me-lg-1">
               <a
                 className="nav-link d-sm-flex align-items-sm-center profilname"
-                href="#"
+                href="!#"
               >
                 <img
                   src={`https://localhost:7019/${person.person_ProfilPicturePath}`}

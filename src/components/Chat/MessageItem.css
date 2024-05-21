@@ -1,0 +1,23 @@
+.attachment {
+    display: flex;
+    align-items: center;
+    background-color: #f4f4f4;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+  }
+  
+  .attachment-icon {
+    margin-right: 10px;
+    color: #888;
+  }
+  
+  .attachment-link {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .attachment-link:hover {
+    text-decoration: underline;
+  }
+  

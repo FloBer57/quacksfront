@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const MessageInput = ({ newMessage, setNewMessage, handleSendMessage, handleFileChange }) => {
+  const [filePreviews, setFilePreviews] = useState([]);
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       handleSendMessage();
     }
+  };
+
+  const handleFilesChange = (event) => {
+    const files = Array.from(event.target.files);
+    setFilePreviews(files.map(file => ({ name: file.name, url: URL.createObjectURL(file) })));
+    handleFileChange(event);
   };
 
   return (
@@ -26,7 +33,7 @@ const MessageInput = ({ newMessage, setNewMessage, handleSendMessage, handleFile
           <input
             type="file"
             className="btn btn-secondary"
-            onChange={handleFileChange}
+            onChange={handleFilesChange}
             multiple
             style={{ display: 'none' }}
             id="fileInput"
@@ -35,6 +42,13 @@ const MessageInput = ({ newMessage, setNewMessage, handleSendMessage, handleFile
             <i className="fa fa-paperclip" aria-hidden="true"></i>
           </label>
         </div>
+      </div>
+      <div className="file-previews">
+        {filePreviews.map((file, index) => (
+          <div key={index} className="file-preview">
+            <i className="fa fa-paperclip" aria-hidden="true"></i> {file.name}
+          </div>
+        ))}
       </div>
     </div>
   );

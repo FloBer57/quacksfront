@@ -1,8 +1,21 @@
 // src/services/messageService.js
-import { post } from '../api/agent';
+import { post,get } from '../api/agent';
 
 const sendMessage = async (messageDto) => {
   return await post('/Message', messageDto);
 };
 
-export { sendMessage };
+const getAttachmentByMessageId = async (messageId) => {
+  try {
+    const response = await get(`/message/${messageId}/attachments`);
+    return response;
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      return []; 
+    }
+    console.error('Error fetching attachments:', error);
+    throw error;
+  }
+};
+
+export { sendMessage , getAttachmentByMessageId};
