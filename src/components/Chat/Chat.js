@@ -130,6 +130,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
 
       signalRService.sendMessage(personId, newMessage);
       setNewMessage("");
+      
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error(error.message);

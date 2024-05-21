@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from './context/authContext';
 import LoginForm from './pages/Login';
 import HomePage from './pages/HomePage';
+import AdminPage from './pages/AdminPage';
 import Unauthorized from './pages/Unauthorized';
 import Forbidden from './pages/Forbidden';
 import NotFound from './pages/NotFound';
@@ -30,6 +31,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/adminPage"
+            element={
+              <ProtectedRoute>
+                <AdminPage />
               </ProtectedRoute>
             }
           />

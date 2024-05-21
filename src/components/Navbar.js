@@ -160,7 +160,7 @@ const Navbar = ({ person }) => {
                 <Dropdown.Menu className="dropdown-menu">
                   <Dropdown.Item href="#/action-1">Mon compte</Dropdown.Item>
                   {person.personRole_Id === 2 ? (
-                    <Dropdown.Item href="#/action-2">Administrateur</Dropdown.Item>
+                    <Dropdown.Item href="/AdminPage">Administrateur</Dropdown.Item>
                   ) : null}
                   <Dropdown.Item onClick={handleLogout}>Déconnexion</Dropdown.Item>
                 </Dropdown.Menu>

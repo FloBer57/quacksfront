@@ -1,0 +1,13 @@
+.admin-list{
+    max-height: 93vh;
+    overflow: auto;
+}
+
+.flex-column.nav {
+    margin-top: 30px;
+}
+
+.current-job-title {
+    font-weight: bold;
+  }
+  
