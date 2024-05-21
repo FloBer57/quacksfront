@@ -34,13 +34,13 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
   const listRef = useRef(null);
 
   useEffect(() => {
-    const fetchMessages = async (page) => {
+    const fetchMessages = async () => {
       try {
-        const fetchedMessages = await getMessagesByChannelId(channelId, page, 20); // fetch 20 messages at a time
+        const fetchedMessages = await getMessagesByChannelId(channelId); // fetch 20 messages at a time
         if (fetchedMessages.length > 0) {
           setMessages((prevMessages) => [...fetchedMessages, ...prevMessages]);
         } else {
-          setHasMore(false); // no more messages to load
+          setHasMore(false); 
         }
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -78,7 +78,6 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
       }
     };
 
-    // Reset states when channelId changes
     setMessages([]);
     setPage(1);
     setHasMore(true);
@@ -165,6 +164,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
         <h5>{roleName}</h5>
         {members.map((member) => (
           <div key={member.person_Id} className="member-item">
+          <i class="fas fa-circle fa-lg"></i>
             <img
               src={`https://localhost:7019/${member.person_ProfilPicturePath}`}
               alt="avatar"
@@ -172,7 +172,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
               height="30"
             />
             <span>
-              {member.person_FirstName} {member.person_LastName}
+              {member.person_FirstName} {member.person_LastName} {member.person_PersonStatut}
             </span>
           </div>
         ))}

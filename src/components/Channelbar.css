@@ -33,6 +33,8 @@
 .discordimage {
   height: 100%;
   width: 80%;
+  right: 20px;
+  position: relative;
 }
 
 .iconcircle{
@@ -48,8 +50,12 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-bottom {
 
 .channelbar {
   height: 70px !important;
+  background-color: #00405f;
 }
 
+.topnavbar{
+  background-color: #00405f !important;
+}
 span.badge.position-absolute.top-0.start-100.translate-middle.p-2.bg-danger.border.border-light.rounded-circle {
   margin-top: 15px;
   font-size: 10px;
@@ -57,7 +63,6 @@ span.badge.position-absolute.top-0.start-100.translate-middle.p-2.bg-danger.bord
 
 .justify-content-center {
   justify-content: center !important;
-  margin-right: 10px;
 }
 
 .QuackersLogo {

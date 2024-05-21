@@ -1,15 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import './Channelbar.css';
-import { personXchannelContext, PersonXchannelProvider } from '../context/personxchannelontext';
-import { useNavigate } from 'react-router-dom';
+import { PersonXchannelProvider } from '../context/personxchannelontext';
 import CreateChannelModal from './CreateChannelModal';
-import { toast, ToastContainer } from 'react-toastify';
 
 const url = 'https://localhost:7019';
 
 const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCreateChannel, handleChannelLeft }) => {
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
-  const navigate = useNavigate();
 
   if (!channels) return <p>Loading...</p>;
 
@@ -57,7 +54,6 @@ const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCre
         onChannelCreated={handleCreateChannel}
         creatorId={personId} // Passez l'ID du créateur
       />
-      <ToastContainer />
     </>
   );
 };

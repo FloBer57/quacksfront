@@ -91,7 +91,7 @@ const Navbar = ({ person }) => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+      <nav className="navbar navbar-expand-lg navbar-light bg-body-tertiary top-navbar">
         <div className="container-fluid justify-content-between">
           <div className="d-flex">
             <a

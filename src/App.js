@@ -37,7 +37,7 @@ const App = () => {
           <Route path="/forbidden" element={<Forbidden />} />
           <Route path="/not-found" element={<NotFound />} />
           <Route path="/error" element={<Error />} />
-          <Route path="*" element={<Navigate to="/not-found" />} />
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
         <ToastContainer />
       </Router>
