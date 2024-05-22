@@ -13,6 +13,16 @@
   padding: 0;
 }
 
+.channel-zero{
+  margin-top: 20px;
+}
+.channel-picture {
+
+  margin-top: 5px;
+  border: 3px solid #f9b700;
+  border-radius: 100%;
+}
+
 .navbar .nav-link .position-relative {
   display: inline-block;
 }
@@ -38,8 +48,7 @@
 }
 
 .iconcircle{
-  margin-top: 5px;
-  width: 55px;
+  width: 50px;
   height: 100%;
   object-fit: contain;
 }

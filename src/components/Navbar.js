@@ -116,7 +116,7 @@ const Navbar = ({ person }) => {
                   id="dropdown-custom-components"
                   className={getStatusClass()}
                 >
-                  <i className="fas fa-chevron-circle-down fa-lg basis-green"></i>
+                  <i className="fas fa-chevron-circle-down fa-lg"></i>
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="dropdown-menu">

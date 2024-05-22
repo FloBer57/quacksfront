@@ -31,7 +31,6 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
     try {
       const newChannel = {
         channel_Name: channelName,
-        channel_Description: channelDescription,
         channelType_Id: selectedPersons.length > 2 ? 2 : 1
       };
       const createdChannel = await createChannel(newChannel);
@@ -86,17 +85,6 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
               placeholder="Entrer le nom du canal"
               value={channelName}
               onChange={(e) => setChannelName(e.target.value)}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formChannelDescription" className="mt-3">
-            <Form.Label>Description du canal</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Entrer la description du canal"
-              value={channelDescription}
-              onChange={(e) => setChannelDescription(e.target.value)}
               required
             />
           </Form.Group>

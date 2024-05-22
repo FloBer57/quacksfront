@@ -1,3 +1,6 @@
+.navbar{
+  background-color: #d2dbedf7 !important;
+}
 .dropdown-menu {
   position: absolute;
   will-change: transform;
@@ -29,23 +32,23 @@
 }
 
 .basis-green{
-  color: green;
+  color: rgb(0, 128, 0);
 }
 /* Styles pour les statuts */
 .status-online {
-  color: green;
+  color: rgba(0, 128, 0, 0.849) !important;
 }
 
 .status-busy {
-  color: red;
+  color: rgba(255, 0, 0, 0.849) !important;
 }
 
 .status-inactive {
-  color: orange;
+  color: rgba(255, 166, 0, 0.849) !important;
 }
 
 .status-active {
-  color: blue;
+  color: rgba(0, 0, 255, 0.849) !important;
 }
 
 

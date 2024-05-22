@@ -6,7 +6,7 @@ const MessageItem = ({ message, personId }) => {
   const [attachments, setAttachments] = useState([]);
 
   useEffect(() => {
-    if (message.message_HasAttachment ) {
+    if (message.message_HasAttachment) {
       const fetchAttachments = async () => {
         try {
           const fetchedAttachments = await getAttachmentByMessageId(message.message_Id);

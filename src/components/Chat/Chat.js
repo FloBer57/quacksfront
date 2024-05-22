@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./Chat.css";
@@ -33,10 +33,18 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
   const isSubscribed = useRef(false);
   const listRef = useRef(null);
 
+  const statusClassMap = useMemo(() => ({
+    1: 'status-offline',
+    2: 'status-active',
+    3: 'status-inactive',
+    4: 'status-busy',
+    5: 'status-online'
+  }), []);
+
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const fetchedMessages = await getMessagesByChannelId(channelId); // fetch 20 messages at a time
+        const fetchedMessages = await getMessagesByChannelId(channelId); 
         if (fetchedMessages.length > 0) {
           setMessages((prevMessages) => [...fetchedMessages, ...prevMessages]);
         } else {
@@ -86,7 +94,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
     setAdminMembers([]);
     setUserMembers([]);
 
-    fetchMessages(page);
+    fetchMessages();
     fetchChannel();
   }, [channelId, personId, page]);
 
@@ -108,27 +116,27 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
 
   const handleSendMessage = async () => {
     if (newMessage.trim() === "" && files.length === 0) return;
-  
+
     const messageDto = {
       MessageText: newMessage,
       ChannelId: channelId,
       PersonId: personId,
       Message_HasAttachment: files.length > 0
     };
-  
+
     try {
       const sentMessage = await sendMessage(messageDto);
-  
+
       if (files.length > 0) {
         const attachmentDto = {
           Message_Id: sentMessage.message_Id,
         };
-  
+
         const attachments = await createAttachments(attachmentDto, files);
         sentMessage.attachments = attachments;
         setFiles([]);
       }
-  
+
       signalRService.sendMessage(personId, newMessage);
       setNewMessage("");
       
@@ -137,7 +145,6 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
       toast.error(error.message);
     }
   };
-  
 
   const handleFileChange = (event) => {
     setFiles([...event.target.files]);
@@ -167,8 +174,9 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
         <h5>{roleName}</h5>
         {members.map((member) => (
           <div key={member.person_Id} className="member-item">
-          <i class="fas fa-circle fa-lg"></i>
+            <i className={`user-channel-statut fas fa-circle fa-lg ${statusClassMap[member.personStatut_Id]}`}></i>
             <img
+              className="user-channel-statut-picture"
               src={`https://localhost:7019/${member.person_ProfilPicturePath}`}
               alt="avatar"
               width="30"
@@ -195,10 +203,8 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
         <div className={channel?.channelType_Id === 2 ? "col-10" : "col-12"}>
           <div className="card chat-app">
             <div className="chat" onScroll={handleScroll} ref={listRef}>
-              {channel?.channelType_Id === 1 ? (
+              {channel?.channelType_Id === 1 && (
                 <ChannelHeader otherPerson={otherPerson} />
-              ) : (
-                ""
               )}
               <MessageList
                 messages={messages}
@@ -216,11 +222,22 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
         </div>
         {channel?.channelType_Id === 2 && (
           <div className="col-2 members-list">
+          <i className="fa fa-wrench" ></i>
+            <div className="member-list-title">
+              <img
+                className="member-list-channelimage"
+                src={`https://localhost:7019/${channel.channel_ImagePath}`}
+                alt="channel"
+              />
+              {channel.channel_Name}
+              {channel.channel_Description}
+            </div>
+
             {renderMembers(adminMembers, "Administrateur")}
             {renderMembers(userMembers, "Utilisateur")}
             <button
-              onClick={handleLeaveChannel}
-              className="btn btn-danger mt-2"
+              onClick={handleLeaveChannel} 
+              className="btn btn-danger col-2 mt-2 buttonchannellist"
             >
               Quitter le canal
             </button>

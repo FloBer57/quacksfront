@@ -128,7 +128,7 @@
     height: calc(1.75rem + 0.33rem + 2px);
     width: 45px;
   }
-  
+
   .chat .chat-history .my-message:after {
     bottom: 100%;
     left: 30px;
@@ -190,6 +190,41 @@
     float: right;
   }
   
+  .members-list{
+    padding-top: 0 !important;
+  }
+
+  .buttonchannellist {
+    position: absolute;
+    z-index: 10;
+    bottom: 80px;
+    right: 0px;
+}
+
+  .member-list-channelimage{
+    width: 80px;
+    height: 80px;
+  }
+
+  .member-list-title{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .user-channel-statut {
+    position: relative;
+    /* left: 10px; */
+    bottom: 10px;
+    z-index: 10;
+}
+
+img.user-channel-statut-picture {
+  position: relative;
+  right: 10px;
+  /* z-index: 10; */
+}
   .clearfix:after {
     visibility: hidden;
     display: block;
@@ -249,10 +284,11 @@
     }
   }
   
-  /* Styles for members list */
+  
   .members-list {
     padding: 20px;
-    height: calc(100vh - 60px - 60px); /* Ajustez cette valeur en fonction de la taille de votre navbar et de votre channelbar */
+    padding-left: 10px;
+    height: calc(100vh - 121px - 60px);
     overflow-y: auto;
     border-left: 1px solid #ddd;
   }

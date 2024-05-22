@@ -92,11 +92,11 @@ const AdminPageCreateAccount = () => {
 
   return (
     <MDBContainer fluid>
-      <MDBCard className='text-black m-4' style={{ borderRadius: '25px' }}>
+      <MDBCard className='text-black m-1' style={{ borderRadius: '25px', height: '91vh'}}>
         <MDBCardBody>
           <MDBRow>
             <MDBCol md='10' lg='6' className='order-2 order-lg-1 d-flex flex-column align-items-center'>
-              <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Créer un utilisateur</p>
+              <p className="text-center h2 fw-bold mb-5 mx-1 mx-md-4 mt-4">Créer un utilisateur</p>
               <form onSubmit={handleSubmit} className='w-100'>
                 <div className="d-flex flex-row align-items-center mb-4">
                   <MDBIcon fas icon="user me-3" size='lg' />
@@ -136,7 +136,7 @@ const AdminPageCreateAccount = () => {
                 <MDBBtn className='mb-4' size='lg'>Télécharger le modèle CSV</MDBBtn>
               </a>
             </MDBCol>
-            <MDBCol md='10' lg='6' className='order-1 order-lg-2 d-flex align-items-center'>
+            <MDBCol md='10' lg='6' className='order-1 order-lg-2 d-flex align-items-center quacksimagecreate'>
               <MDBCardImage src='https://localhost:7019/Image/WebsiteNeeds/QuacksRegister.png' fluid />
             </MDBCol>
           </MDBRow>

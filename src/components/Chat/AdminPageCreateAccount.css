@@ -1,0 +1,10 @@
+@media only screen and (max-width: 1000px) {
+    .col-md-10.col-lg-6.order-1.order-lg-2.d-flex.align-items-center.quacksimagecreate {
+        display: none !important;
+    }
+}
+
+
+.card-body {
+    overflow: auto;
+}
