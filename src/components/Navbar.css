@@ -28,6 +28,9 @@
   top: 4px;
 }
 
+.basis-green{
+  color: green;
+}
 /* Styles pour les statuts */
 .status-online {
   color: green;

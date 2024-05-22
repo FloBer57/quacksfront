@@ -116,7 +116,7 @@ const Navbar = ({ person }) => {
                   id="dropdown-custom-components"
                   className={getStatusClass()}
                 >
-                  <i className="fas fa-chevron-circle-down fa-lg"></i>
+                  <i className="fas fa-chevron-circle-down fa-lg basis-green"></i>
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="dropdown-menu">
@@ -158,7 +158,7 @@ const Navbar = ({ person }) => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="dropdown-menu">
-                  <Dropdown.Item href="#/action-1">Mon compte</Dropdown.Item>
+                  <Dropdown.Item href="/UserPage">Mon compte</Dropdown.Item>
                   {person.personRole_Id === 2 ? (
                     <Dropdown.Item href="/AdminPage">Administrateur</Dropdown.Item>
                   ) : null}

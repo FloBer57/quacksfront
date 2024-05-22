@@ -1,17 +1,23 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import { AuthProvider } from './context/authContext';
-import LoginForm from './pages/Login';
-import HomePage from './pages/HomePage';
-import AdminPage from './pages/AdminPage';
-import Unauthorized from './pages/Unauthorized';
-import Forbidden from './pages/Forbidden';
-import NotFound from './pages/NotFound';
-import Error from './pages/Error';
-import ProtectedRoute from './routes/ProtectedRoute';
-import RedirectIfAuthenticated from './routes/RedirectIfAuthenticated';
-import 'react-toastify/dist/ReactToastify.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "./context/authContext";
+import LoginForm from "./pages/Login";
+import HomePage from "./pages/HomePage";
+import AdminPage from "./pages/AdminPage";
+import UserPage from "./pages/UserPage";
+import Unauthorized from "./pages/Unauthorized";
+import Forbidden from "./pages/Forbidden";
+import NotFound from "./pages/NotFound";
+import Error from "./pages/Error";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import RedirectIfAuthenticated from "./routes/RedirectIfAuthenticated";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
@@ -39,6 +45,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/userPage"
+            element={
+              <ProtectedRoute>
+                <UserPage />
               </ProtectedRoute>
             }
           />

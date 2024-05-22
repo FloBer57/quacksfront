@@ -12,6 +12,7 @@ const getPersonsByJobTitle = (jobTitleId) => get(`${API_URL}/ByJobTitle/${jobTit
 const getPersonsByStatut = (statutId) => get(`${API_URL}/ByStatut/${statutId}`);
 const getPersonsByRole = (roleId) => get(`${API_URL}/ByRole/${roleId}`);
 const getPersonByEmail = (email) => get(`${API_URL}/ByEmail/${email}`);
+const verifyCurrentPassword = (userId, currentPassword) => post(`${API_URL}/verify-password`, { userId, currentPassword });
 
 export {
   getAllPersons,
@@ -24,4 +25,5 @@ export {
   getPersonsByStatut,
   getPersonsByRole,
   getPersonByEmail,
+  verifyCurrentPassword
 };

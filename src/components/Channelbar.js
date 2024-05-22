@@ -8,6 +8,8 @@ const url = 'https://localhost:7019';
 const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCreateChannel, handleChannelLeft }) => {
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
 
+  
+
   if (!channels) return <p>Loading...</p>;
 
   return (
