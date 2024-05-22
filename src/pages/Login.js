@@ -36,7 +36,7 @@ const LoginForm = () => {
       authLogin();
       toast.success(`Bonjour, vous êtes bien connecté!`);
       navigate('/home');
-      const id = getUserIdFromToken(response.token); // Assurez-vous d'obtenir l'ID de l'utilisateur à partir du token
+      const id = getUserIdFromToken(response.token); 
 
       if (id) {
         try {

@@ -108,26 +108,27 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
 
   const handleSendMessage = async () => {
     if (newMessage.trim() === "" && files.length === 0) return;
-
+  
     const messageDto = {
       MessageText: newMessage,
       ChannelId: channelId,
       PersonId: personId,
+      Message_HasAttachment: files.length > 0
     };
-
+  
     try {
       const sentMessage = await sendMessage(messageDto);
-
+  
       if (files.length > 0) {
         const attachmentDto = {
           Message_Id: sentMessage.message_Id,
         };
-
+  
         const attachments = await createAttachments(attachmentDto, files);
         sentMessage.attachments = attachments;
         setFiles([]);
       }
-
+  
       signalRService.sendMessage(personId, newMessage);
       setNewMessage("");
       
@@ -136,6 +137,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
       toast.error(error.message);
     }
   };
+  
 
   const handleFileChange = (event) => {
     setFiles([...event.target.files]);
