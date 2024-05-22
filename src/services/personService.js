@@ -14,6 +14,17 @@ const getPersonsByRole = (roleId) => get(`${API_URL}/ByRole/${roleId}`);
 const getPersonByEmail = (email) => get(`${API_URL}/ByEmail/${email}`);
 const verifyCurrentPassword = (userId, currentPassword) => post(`${API_URL}/verify-password`, { userId, currentPassword });
 
+const uploadProfilePicture = (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return post(`${API_URL}/uploadProfilePicture`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+};
+
 export {
   getAllPersons,
   getPersonById,
@@ -25,5 +36,6 @@ export {
   getPersonsByStatut,
   getPersonsByRole,
   getPersonByEmail,
-  verifyCurrentPassword
+  verifyCurrentPassword,
+  uploadProfilePicture
 };
