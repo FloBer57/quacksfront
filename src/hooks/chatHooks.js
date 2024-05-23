@@ -93,19 +93,21 @@ export const useChatHooks = (channelId, personId, onChannelLeft) => {
 
   useEffect(() => {
     if (!isSubscribed.current) {
-      signalRService.onMessageReceived((userId, message) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            person_Id: userId,
-            message_Text: message,
-            message_Date: new Date().toISOString(),
-          },
-        ]);
+      signalRService.onMessageReceived((userId, message, channelId) => {
+        if (channelId === channelId) {
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              person_Id: userId,
+              message_Text: message,
+              message_Date: new Date().toISOString(),
+            },
+          ]);
+        }
       });
       isSubscribed.current = true;
     }
-  }, []);
+  }, [channelId]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() === "" && files.length === 0) return;
@@ -130,7 +132,7 @@ export const useChatHooks = (channelId, personId, onChannelLeft) => {
         setFiles([]);
       }
 
-      signalRService.sendMessage(personId, newMessage);
+      signalRService.sendMessage(personId, newMessage, channelId);
       setNewMessage("");
       
     } catch (error) {

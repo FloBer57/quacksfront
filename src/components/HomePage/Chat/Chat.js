@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./Chat.css";
@@ -7,6 +7,7 @@ import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import ChannelHeader from "./ChannelHeader";
 import { useChatHooks } from "../../../hooks/chatHooks";
+import signalRService from "../../../signalr-connection";
 
 const Chat = ({ channelId, personId, onChannelLeft }) => {
   const {
@@ -24,6 +25,14 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
     handleScroll,
     listRef
   } = useChatHooks(channelId, personId, onChannelLeft);
+
+  useEffect(() => {
+    signalRService.joinChannel(channelId);
+
+    return () => {
+      signalRService.exitChannel(channelId);
+    };
+  }, [channelId]);
 
   const renderMembers = (members, roleName) => {
     return (
@@ -79,7 +88,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
         </div>
         {channel?.channelType_Id === 2 && (
           <div className="col-2 members-list">
-          <i className="fa fa-wrench" ></i>
+            <i className="fa fa-wrench"></i>
             <div className="member-list-title">
               <img
                 className="member-list-channelimage"
@@ -93,7 +102,7 @@ const Chat = ({ channelId, personId, onChannelLeft }) => {
             {renderMembers(adminMembers, "Administrateur")}
             {renderMembers(userMembers, "Utilisateur")}
             <button
-              onClick={handleLeaveChannel} 
+              onClick={handleLeaveChannel}
               className="btn btn-danger col-2 mt-2 buttonchannellist"
             >
               Quitter le canal
