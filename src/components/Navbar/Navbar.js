@@ -34,7 +34,6 @@ const Navbar = ({ person }) => {
   const navigate = useNavigate();
 
   const statusList = useMemo(() => [
-    { PersonStatut_Id: 1, PersonStatut_Name: 'Hors ligne' },
     { PersonStatut_Id: 2, PersonStatut_Name: 'Actif' },
     { PersonStatut_Id: 3, PersonStatut_Name: 'Inactif' },
     { PersonStatut_Id: 4, PersonStatut_Name: 'Occupé' },
@@ -112,7 +111,7 @@ const Navbar = ({ person }) => {
       case 'Actif':
         return 'status-active';
       default:
-        return 'status-offline';
+        return 'status-online';
     }
   };
 
