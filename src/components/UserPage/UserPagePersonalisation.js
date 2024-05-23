@@ -1,48 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { Form, Button, Card } from 'react-bootstrap';
 import AvatarEditor from 'react-avatar-editor';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { updatePerson, uploadProfilePicture } from '../../services/personService';
+import { useUserPersonalisation } from '../../hooks/userHooks';
 
 const UserPagePersonalisation = ({ person, fetchPersonData }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imageScale, setImageScale] = useState(1.2);
-  const editorRef = useRef(null);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-    }
-  };
-
-  const generateRandomFileName = () => {
-    return Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-  };
-
-  const handleSave = async () => {
-    if (editorRef.current) {
-      const canvas = editorRef.current.getImageScaledToCanvas();
-      canvas.toBlob(async (blob) => {
-        const fileName = generateRandomFileName() + '.jpg';
-        const file = new File([blob], fileName, { type: 'image/jpeg' });
-
-        try {
-          const response = await uploadProfilePicture(file);
-          const updatePersonDTO = {
-            profilPicturePath: response.path 
-          };
-
-          await updatePerson(person.person_Id, updatePersonDTO);
-          toast.success('Image de profil modifiée avec succès');
-          fetchPersonData();
-        } catch (error) {
-          toast.error(`Erreur lors de la modification de l'image de profil: ${error.message}`);
-        }
-      }, 'image/jpeg');
-    }
-  };
+  const {
+    selectedImage,
+    imageScale,
+    setImageScale,
+    editorRef,
+    handleImageChange,
+    handleSave
+  } = useUserPersonalisation(person, fetchPersonData);
 
   return (
     <Card className="m-3">

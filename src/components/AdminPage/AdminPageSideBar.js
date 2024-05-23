@@ -3,7 +3,7 @@ import { Nav, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 const AdminPageSidebar = ({ setActiveSection }) => {
-  const navigate = useNavigate(); // Hook pour naviguer
+  const navigate = useNavigate(); 
 
   return (
     <div className="d-flex flex-column bg-light" style={{ height: '93vh', width: '250px' }}>

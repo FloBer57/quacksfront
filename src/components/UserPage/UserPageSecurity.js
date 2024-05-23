@@ -1,70 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { Form, Button, Card } from "react-bootstrap";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import {
-  updatePerson,
-  verifyCurrentPassword,
-} from "../../services/personService";
+import { useUserSecurity } from "../../hooks/userHooks";
 
 const UserPageSecurity = ({ person, fetchPersonData }) => {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [newPhone, setNewPhone] = useState("");
-
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      toast.error("Les nouveaux mots de passe ne correspondent pas");
-      return;
-    }
-
-    try {
-      const isValid = await verifyCurrentPassword(
-        person.person_Id,
-        currentPassword
-      );
-      if (!isValid) {
-        toast.error("Mot de passe actuel incorrect");
-        return;
-      }
-
-      const updatePersonDTO = {
-        password: newPassword,
-      };
-
-      await updatePerson(person.person_Id, updatePersonDTO);
-      toast.success("Mot de passe modifié avec succès");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      fetchPersonData();
-    } catch (error) {
-      toast.error(
-        `Erreur lors de la modification du mot de passe: ${error.message}`
-      );
-    }
-  };
-
-  const handlePhoneChange = async (e) => {
-    e.preventDefault();
-
-    const updatePersonDTO = {
-      phoneNumber: newPhone,
-    };
-
-    try {
-      await updatePerson(person.person_Id, updatePersonDTO);
-      setNewPhone("");
-      fetchPersonData();
-      toast.success("Numéro de téléphone modifié avec succès");
-    } catch (error) {
-      toast.error(
-        `Erreur lors de la modification du numéro de téléphone: ${error.message}`
-      );
-    }
-  };
+  const {
+    currentPassword,
+    setCurrentPassword,
+    newPassword,
+    setNewPassword,
+    confirmPassword,
+    setConfirmPassword,
+    newPhone,
+    setNewPhone,
+    handlePasswordChange,
+    handlePhoneChange
+  } = useUserSecurity(person, fetchPersonData);
 
   return (
     <Card className="m-3">

@@ -1,33 +1,20 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import UserPageSidebar from "../components/UserPage/UserPageSideBar";
 import UserPagePersonalisation from "../components/UserPage/UserPagePersonalisation";
 import UserPageSecurity from "../components/UserPage/UserPageSecurity";
 import UserPageInfo from "../components/UserPage/UserPageInfo";
-import { getUserIdFromToken } from "../services/authService";
-import { getPersonById } from "../services/personService";
+import { useUserProfile } from "../hooks/userHooks";
 
 const UserPage = () => {
-  const [person, setPerson] = useState(null);
-  const [activeSection, setActiveSection] = useState('user-management');
   const navigate = useNavigate();
-
-  const fetchPersonData = useCallback(async () => {
-    const id = getUserIdFromToken();
-    if (id) {
-      try {
-        const personData = await getPersonById(id, navigate);
-        setPerson(personData);
-      } catch (error) {
-        console.error("Error fetching person data:", error);
-      }
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    fetchPersonData();
-  }, [fetchPersonData]);
+  const {
+    person,
+    activeSection,
+    setActiveSection,
+    fetchPersonData
+  } = useUserProfile(navigate);
 
   if (!person) {
     return <div>Loading...</div>;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   MDBBtn,
   MDBContainer,
@@ -10,87 +10,30 @@ import {
   MDBInput,
   MDBIcon
 } from 'mdb-react-ui-kit';
-import { createPerson } from '../../services/personService';
-import { getJobTitles } from '../../services/jobTitleService';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './AdminPageCreateAccount.css';
-import Papa from 'papaparse';
+import { useCreateAccount } from '../../hooks/adminHooks';
 
 const AdminPageCreateAccount = () => {
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [jobTitleId, setJobTitleId] = useState('');
-  const [jobTitles, setJobTitles] = useState([]);
-
-  useEffect(() => {
-    const fetchJobTitles = async () => {
-      try {
-        const jobTitlesData = await getJobTitles();
-        setJobTitles(jobTitlesData);
-      } catch (error) {
-        console.error('Error fetching job titles:', error);
-      }
-    };
-
-    fetchJobTitles();
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const createPersonDTO = {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      phoneNumber: phoneNumber,
-      jobTitle_Id: jobTitleId,
-    };
-
-    try {
-      await createPerson(createPersonDTO);
-      toast.success('Utilisateur créé avec succès!');
-      setEmail('');
-      setFirstName('');
-      setLastName('');
-      setPhoneNumber('');
-      setJobTitleId('');
-    } catch (error) {
-      toast.error(`Erreur lors de la création de l'utilisateur: ${error.message}`);
-    }
-  };
-
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      Papa.parse(file, {
-        header: true,
-        complete: async (results) => {
-          const users = results.data;
-          for (const user of users) {
-            const createPersonDTO = {
-              email: user.FirstName + ' ' + user.LastName,
-              firstName: user.FirstName,
-              lastName: user.LastName,
-              phoneNumber: user.PhoneNumber,
-              jobTitle_Id: jobTitles.find(job => job.personJobTitle_Name === user.JobTitle)?.personJob_TitleId || '',
-            };
-            try {
-              await createPerson(createPersonDTO);
-            } catch (error) {
-              toast.error(`Erreur lors de la création de l'utilisateur: ${error.message}`);
-            }
-          }
-          toast.success('Tous les utilisateurs ont été créés avec succès à partir du CSV!');
-        },
-      });
-    }
-  };
+  const {
+    email,
+    setEmail,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    phoneNumber,
+    setPhoneNumber,
+    jobTitleId,
+    setJobTitleId,
+    jobTitles,
+    handleSubmit,
+    handleFileUpload
+  } = useCreateAccount();
 
   return (
     <MDBContainer fluid>
-      <MDBCard className='text-black m-1' style={{ borderRadius: '25px', height: '91vh'}}>
+      <MDBCard className='text-black m-1' style={{ borderRadius: '25px', height: '91vh' }}>
         <MDBCardBody>
           <MDBRow>
             <MDBCol md='10' lg='6' className='order-2 order-lg-1 d-flex flex-column align-items-center'>
