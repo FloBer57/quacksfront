@@ -49,7 +49,7 @@ const AdminPageUserList = () => {
 
   const handleJobTitleChange = async (userId, newJobTitleId) => {
     try {
-      await updatePerson(userId, { personJobTitle_Id: newJobTitleId });
+      await updatePerson(userId, { jobTitleId: newJobTitleId });
       console.log('Job title successfully updated for user:', userId, newJobTitleId);
       toast.success("Le Job à bien été changé!");
       setUsers((prevUsers) =>
@@ -64,7 +64,7 @@ const AdminPageUserList = () => {
 
   const handleUserRoleChange = async (userId, newRoleId) => {
     try {
-      await updatePerson(userId, { personRole_Id: newRoleId });
+      await updatePerson(userId, { roleId: newRoleId });
       console.log('User role successfully updated for user:', userId, newRoleId);
       toast.success("Le Role à bien été changé!");
       setUsers((prevUsers) =>
@@ -114,6 +114,7 @@ const AdminPageUserList = () => {
                       <Dropdown.Item
                         key={`jobTitle-${jobTitle.personJob_TitleId}`}
                         onClick={() => handleJobTitleChange(user.person_Id, jobTitle.personJob_TitleId)}
+                        {... console.log(user.personJobTitle_Id)}
                       >
                         {jobTitle.personJobTitle_Name}
                       </Dropdown.Item>

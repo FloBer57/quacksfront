@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import AdminPageSidebar from "../components/Chat/AdminPageSideBar";
-import AdminPageUserList from "../components/Chat/AdminPageUserList";
-import AdminPageChannelList from "../components/Chat/AdminPageChannelList";
-import AdminPageCreateAccount from "../components/Chat/AdminPageCreateAccount";
+import Navbar from "../components/Navbar/Navbar";
+import AdminPageSidebar from "../components/AdminPage/AdminPageSideBar";
+import AdminPageUserList from "../components/AdminPage/AdminPageUserList";
+import AdminPageChannelList from "../components/AdminPage/AdminPageChannelList";
+import AdminPageCreateAccount from "../components/AdminPage/AdminPageCreateAccount";
 import { getUserIdFromToken } from "../services/authService";
 import { getPersonById } from "../services/personService";
 

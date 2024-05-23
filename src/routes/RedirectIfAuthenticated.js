@@ -6,7 +6,7 @@ const RedirectIfAuthenticated = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   
   if (loading) {
-    return <div>Loading...</div>; // Ou un spinner de chargement
+    return <div>Loading...</div>; 
   }
 
   return isAuthenticated ? <Navigate to="/home" /> : children;

@@ -3,15 +3,14 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { toast } from "react-toastify";
-import { getAllPersons } from '../services/personService';
-import { createChannel } from '../services/channelService';
-import { createAssociation } from '../services/personxchannelservice';
-import { createRoleAssociation } from '../services/channelpersonrolexpersonxchannelservice';
+import { getAllPersons } from '../../../services/personService';
+import { createChannel } from '../../../services/channelService';
+import { createAssociation } from '../../../services/personxchannelservice';
+import { createRoleAssociation } from '../../../services/channelpersonrolexpersonxchannelservice';
 import './CreateChannelModal.css'; // Importez votre fichier CSS
 
 const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) => {
   const [channelName, setChannelName] = useState('');
-  const [channelDescription, setChannelDescription] = useState('');
   const [selectedPersons, setSelectedPersons] = useState([creatorId]); // Ajouter le créateur par défaut
   const [persons, setPersons] = useState([]);
 
@@ -51,7 +50,6 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
       toast.success(`Création du channel ${channelName} réussie !`);
       // Réinitialiser les états après la création du canal
       setChannelName('');
-      setChannelDescription('');
       setSelectedPersons([creatorId]);
       handleClose();
     } catch (error) {

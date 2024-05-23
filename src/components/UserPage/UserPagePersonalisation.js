@@ -31,7 +31,7 @@ const UserPagePersonalisation = ({ person, fetchPersonData }) => {
         try {
           const response = await uploadProfilePicture(file);
           const updatePersonDTO = {
-            profilPicturePath: response.path // Assuming the API returns the path
+            profilPicturePath: response.path 
           };
 
           await updatePerson(person.person_Id, updatePersonDTO);

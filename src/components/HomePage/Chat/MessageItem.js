@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './MessageItem.css';
-import { getAttachmentByMessageId } from '../../services/messageService';
+import { getAttachmentByMessageId } from '../../../services/messageService';
 
 const MessageItem = ({ message, personId }) => {
   const [attachments, setAttachments] = useState([]);

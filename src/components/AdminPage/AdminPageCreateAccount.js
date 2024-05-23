@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   MDBBtn,
   MDBContainer,
@@ -25,7 +24,6 @@ const AdminPageCreateAccount = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [jobTitleId, setJobTitleId] = useState('');
   const [jobTitles, setJobTitles] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobTitles = async () => {

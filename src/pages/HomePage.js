@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Chat from '../components/Chat/Chat';
-import Accueil from '../components/Acceuil';
-import ChannelbarWithProvider from '../components/Channelbar';
+import Navbar from '../components/Navbar/Navbar';
+import Chat from '../components/HomePage/Chat/Chat';
+import Accueil from '../components/HomePage/Acceuil/Acceuil';
+import ChannelbarWithProvider from '../components/HomePage/ChannelBar/Channelbar';
 import { getUserIdFromToken } from '../services/authService';
 import { getPersonById } from '../services/personService';
 import { getChannelsByPersonId } from '../services/personxchannelservice'; // Importer le service pour récupérer les canaux

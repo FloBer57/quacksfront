@@ -4,9 +4,9 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useNavigate } from "react-router-dom";
-import { revokeRefreshToken } from '../services/authService';
-import { useAuth } from '../context/authContext';
-import { updatePerson } from '../services/personService';
+import { revokeRefreshToken } from '../../services/authService';
+import { useAuth } from '../../context/authContext';
+import { updatePerson } from '../../services/personService';
 import { toast } from "react-toastify";
 import "./Navbar.css";
 

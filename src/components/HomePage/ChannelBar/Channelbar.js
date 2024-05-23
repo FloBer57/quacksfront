@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Channelbar.css';
-import { PersonXchannelProvider } from '../context/personxchannelontext';
+import { PersonXchannelProvider } from '../../../context/personxchannelontext';
 import CreateChannelModal from './CreateChannelModal';
 
 const url = 'https://localhost:7019';
