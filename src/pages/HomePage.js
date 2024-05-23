@@ -4,7 +4,6 @@ import Navbar from '../components/Navbar/Navbar';
 import Chat from '../components/HomePage/Chat/Chat';
 import Accueil from '../components/HomePage/Acceuil/Acceuil';
 import ChannelbarWithProvider from '../components/HomePage/ChannelBar/Channelbar';
-import NotificationNav from '../components/Navbar/NotificationNav';
 import { getUserIdFromToken } from '../services/authService';
 import { getPersonById } from '../services/personService';
 import { getChannelsByPersonId } from '../services/personxchannelservice'; 
