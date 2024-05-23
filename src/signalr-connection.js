@@ -22,6 +22,10 @@ class SignalRService {
     this.connection.invoke('NewMessage', user, message, channelId).catch(err => console.error('SignalR Send Error: ', err));
   }
 
+  sendNotification(user, notification, channelId) {
+    this.connection.invoke('NewNotification', user, notification, channelId).catch(err => console.error('SignalR Send Error: ', err));
+  }
+
   joinChannel(channelId) {
     this.connection.invoke('JoinChannel', channelId).catch(err => console.error('SignalR Join Error: ', err));
   }

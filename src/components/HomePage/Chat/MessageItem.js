@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './MessageItem.css';
+import './Chat.css';
 import { getAttachmentByMessageId } from '../../../services/messageService';
 
 const MessageItem = ({ message, personId }) => {
@@ -26,6 +27,7 @@ const MessageItem = ({ message, personId }) => {
 
   return (
     <li className='clearfix'>
+    {        console.log(personId)}
       <div className={
           message.person_Id !== personId
             ? 'message-data'

@@ -4,9 +4,10 @@ import Navbar from '../components/Navbar/Navbar';
 import Chat from '../components/HomePage/Chat/Chat';
 import Accueil from '../components/HomePage/Acceuil/Acceuil';
 import ChannelbarWithProvider from '../components/HomePage/ChannelBar/Channelbar';
+import NotificationNav from '../components/Navbar/NotificationNav';
 import { getUserIdFromToken } from '../services/authService';
 import { getPersonById } from '../services/personService';
-import { getChannelsByPersonId } from '../services/personxchannelservice'; // Importer le service pour récupérer les canaux
+import { getChannelsByPersonId } from '../services/personxchannelservice'; 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -21,7 +22,7 @@ const HomePage = () => {
       const id = getUserIdFromToken();
       if (id) {
         try {
-          const personData = await getPersonById(id, navigate); // Pass navigate to the service
+          const personData = await getPersonById(id, navigate); 
           setPerson(personData);
 
           const personChannels = await getChannelsByPersonId(id);
@@ -54,7 +55,7 @@ const HomePage = () => {
   };
 
   if (person === null) {
-    return <div>Loading...</div>; // or any other loading indicator
+    return <div>Loading...</div>; 
   }
 
   return (

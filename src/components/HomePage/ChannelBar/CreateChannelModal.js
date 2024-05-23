@@ -3,10 +3,11 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { toast } from "react-toastify";
-import { getAllPersons } from '../../../services/personService';
+import { getAllPersons, getPersonById } from '../../../services/personService';
 import { createChannel } from '../../../services/channelService';
-import { createAssociation } from '../../../services/personxchannelservice';
 import { createRoleAssociation } from '../../../services/channelpersonrolexpersonxchannelservice';
+import { createAssociation } from '../../../services/personxchannelservice';
+import { createNotification, addPersonXNotification } from '../../../services/notificationService';
 import './CreateChannelModal.css'; // Importez votre fichier CSS
 
 const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) => {
@@ -34,21 +35,32 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
       };
       const createdChannel = await createChannel(newChannel);
 
-      // Créez les associations entre le canal et les personnes sélectionnées
-      await Promise.all(selectedPersons.map(personId => {
-        const role = personId === creatorId ? 1 : 2; // Le créateur est administrateur, les autres sont utilisateurs
-        return createAssociation({ PersonId: personId, ChannelId: createdChannel.channel_Id, ChannelPersonRole_Id: role });
-      }));
-
       // Créez les rôles de canal par défaut pour les personnes sélectionnées
       await Promise.all(selectedPersons.map(personId => {
         const role = personId === creatorId ? 1 : 2; // Le créateur est administrateur, les autres sont utilisateurs
-        return createRoleAssociation({ PersonId: personId, ChannelId: createdChannel.channel_Id, ChannelPersonRole_Id: role });
+        return createRoleAssociation({ personId: personId, channelId: createdChannel.channel_Id, channelPersonRole_Id: role });
       }));
+
+      await Promise.all(selectedPersons.map(async personId => {
+        await createAssociation({ personId: personId, channelId: createdChannel.channel_Id });
+      }));
+
+      const nameCreator = await getPersonById(creatorId);
+
+      // Créez une notification pour le canal
+      const notification = {
+        Notification_Name: `Invitation ${channelName}`,
+        Notification_Text: `Vous avez été invité à rejoindre le canal ${channelName} par ${nameCreator.person_FirstName} ${nameCreator.person_LastName} `,
+        Notification_TypeId: 1 // Assuming 1 is the type ID for this kind of notification
+      };
+
+      const createdNotification = await createNotification(notification);
+
+      // Créez les associations de notification pour chaque personne invitée
+      await Promise.all(selectedPersons.map(personId => addPersonXNotification(personId, createdNotification.notification_Id)));
 
       onChannelCreated(createdChannel);
       toast.success(`Création du channel ${channelName} réussie !`);
-      // Réinitialiser les états après la création du canal
       setChannelName('');
       setSelectedPersons([creatorId]);
       handleClose();

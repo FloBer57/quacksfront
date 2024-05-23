@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
+import { Button, Card } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useNavigate } from "react-router-dom";
 import { revokeRefreshToken } from '../../services/authService';
 import { useAuth } from '../../context/authContext';
 import { updatePerson } from '../../services/personService';
+import { getNotificationsByPersonId, deletePersonXNotification } from '../../services/notificationService';
 import { toast } from "react-toastify";
 import "./Navbar.css";
 
 const CustomDropdownToggle = React.forwardRef(({ children, onClick, className }, ref) => (
   <a
-    href="!#"
+    href=""
     ref={ref}
     onClick={(e) => {
       e.preventDefault();
@@ -27,6 +29,7 @@ const CustomDropdownToggle = React.forwardRef(({ children, onClick, className },
 const Navbar = ({ person }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [notifications, setNotifications] = useState([]);
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -43,6 +46,19 @@ const Navbar = ({ person }) => {
     setCurrentStatus(status);
     console.log("Initial status set to:", status);
   }, [person.personStatut_Id, statusList]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const data = await getNotificationsByPersonId(person.person_Id);
+        setNotifications(data);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+
+    fetchNotifications();
+  }, [person.person_Id]);
 
   const handleClose = () => setShowOffcanvas(false);
   const toggleShow = () => setShowOffcanvas((s) => !s);
@@ -74,6 +90,17 @@ const Navbar = ({ person }) => {
     }
   };
 
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      await deletePersonXNotification(person.person_Id, notificationId);
+      setNotifications(notifications.filter(notification => notification.notification_Id !== notificationId));
+      toast.success("Notification supprimée avec succès");
+    } catch (error) {
+      toast.error("Erreur lors de la suppression de la notification");
+      console.error("Failed to delete notification:", error);
+    }
+  };
+
   const getStatusClass = () => {
     switch (currentStatus?.PersonStatut_Name) {
       case 'En ligne':
@@ -96,7 +123,6 @@ const Navbar = ({ person }) => {
           <div className="d-flex">
             <a
               className="nav-link dropdown-toggle hidden-arrow"
-              href="!#"
               id="navbarDropdownMenuLink"
               role="button"
               aria-expanded="false"
@@ -104,7 +130,7 @@ const Navbar = ({ person }) => {
             >
               <i className="fas fa-bell fa-lg"></i>
               <span className="badge rounded-pill badge-notification bg-danger">
-                12
+                {notifications.length}
               </span>
             </a>
           </div>
@@ -175,8 +201,26 @@ const Navbar = ({ person }) => {
           <Offcanvas.Title>Notifications</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          Some text as placeholder. In real life you can have the elements you
-          have chosen. Like, text, images, lists, etc.
+          {notifications.length === 0 ? (
+            <p>Aucune notification</p>
+          ) : (
+            notifications.map((notification) => (
+              <Card key={notification.notification_Id} className="mb-3">
+                <Card.Body>
+                  <Card.Title>{notification.notification_Name}</Card.Title>
+                  <Card.Text>{notification.notification_Text}</Card.Text>
+                  <Card.Footer>
+                    <small className="text-muted">
+                      {new Date(notification.notification_DatePost).toLocaleString()}
+                    </small>
+                    <Button variant="danger" size="sm" onClick={() => handleDeleteNotification(notification.notification_Id)}>
+                      Supprimer
+                    </Button>
+                  </Card.Footer>
+                </Card.Body>
+              </Card>
+            ))
+          )}
         </Offcanvas.Body>
       </Offcanvas>
     </>
