@@ -552,8 +552,9 @@ input#light:checked ~ .content .lighthouse .light {
 /* labels */
 
 label[for=night] {
+    position: absolute; /* Nécessaire pour le positionnement absolu */
     bottom: 325px;
-    right: 543px;
+	left: 48.5%;
     background: #0000;
     width: 37px;
     height: 36px;
@@ -562,6 +563,7 @@ label[for=night] {
     cursor: pointer;
     animation: hide-moon 0.5s ease-in-out 0s 1;
 }
+
 
 label[for=night]:before {
 	content: "";

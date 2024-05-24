@@ -8,11 +8,12 @@ import { createChannel } from '../../../services/channelService';
 import { createRoleAssociation } from '../../../services/channelpersonrolexpersonxchannelservice';
 import { createAssociation } from '../../../services/personxchannelservice';
 import { createNotification, addPersonXNotification } from '../../../services/notificationService';
-import './CreateChannelModal.css'; // Importez votre fichier CSS
+import './CreateChannelModal.css';
+import SignalRService from '../../../signalr-connection';
 
 const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) => {
   const [channelName, setChannelName] = useState('');
-  const [selectedPersons, setSelectedPersons] = useState([creatorId]); // Ajouter le créateur par défaut
+  const [selectedPersons, setSelectedPersons] = useState([creatorId]);
   const [persons, setPersons] = useState([]);
 
   useEffect(() => {
@@ -35,9 +36,8 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
       };
       const createdChannel = await createChannel(newChannel);
 
-      // Créez les rôles de canal par défaut pour les personnes sélectionnées
       await Promise.all(selectedPersons.map(personId => {
-        const role = personId === creatorId ? 1 : 2; // Le créateur est administrateur, les autres sont utilisateurs
+        const role = personId === creatorId ? 1 : 2;
         return createRoleAssociation({ personId: personId, channelId: createdChannel.channel_Id, channelPersonRole_Id: role });
       }));
 
@@ -47,16 +47,14 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
 
       const nameCreator = await getPersonById(creatorId);
 
-      // Créez une notification pour le canal
       const notification = {
         Notification_Name: `Invitation ${channelName}`,
-        Notification_Text: `Vous avez été invité à rejoindre le canal ${channelName} par ${nameCreator.person_FirstName} ${nameCreator.person_LastName} `,
-        Notification_TypeId: 1 // Assuming 1 is the type ID for this kind of notification
+        Notification_Text: `Vous avez été invité à rejoindre le canal ${channelName} par ${nameCreator.person_FirstName} ${nameCreator.person_LastName}`,
+        Notification_TypeId: 1
       };
 
       const createdNotification = await createNotification(notification);
 
-      // Créez les associations de notification pour chaque personne invitée
       await Promise.all(selectedPersons.map(personId => addPersonXNotification(personId, createdNotification.notification_Id)));
 
       onChannelCreated(createdChannel);
@@ -64,6 +62,9 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
       setChannelName('');
       setSelectedPersons([creatorId]);
       handleClose();
+
+      SignalRService.sendNotification(createdNotification.notification_Id, notification.Notification_Name, notification.Notification_Text, notification.Notification_TypeId);
+      console.log("Selected Persons IDs: ", selectedPersons);
     } catch (error) {
       toast.error(error.message);
     }
@@ -74,7 +75,7 @@ const CreateChannelModal = ({ show, handleClose, onChannelCreated, creatorId }) 
       setSelectedPersons([...selectedPersons, personId]);
     }
   };
-  
+
   const handleRemovePerson = (personId) => {
     if (personId !== creatorId) {
       setSelectedPersons(selectedPersons.filter(id => id !== personId));

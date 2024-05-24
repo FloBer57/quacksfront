@@ -1,7 +1,7 @@
 /* src/components/Channelbar.css */
 .navbar-nav {
   display: flex;
-  overflow-x: auto;
+  overflow-x: hidden; /* Masquer la barre de défilement native */
   white-space: nowrap;
 }
 
@@ -13,13 +13,13 @@
   padding: 0;
 }
 
-.channel-zero{
+.channel-zero {
   margin-top: 20px;
 }
-.channel-picture {
 
-  margin-top: 5px;
-  border: 3px solid #f9b700;
+.channel-picture {
+  margin-top: 12px;
+  border: 3px solid #d12f29;
   border-radius: 100%;
 }
 
@@ -45,9 +45,10 @@
   width: 80%;
   right: 20px;
   position: relative;
+  display: flex; /* Ajoutez flexbox pour faciliter le défilement */
 }
 
-.iconcircle{
+.iconcircle {
   width: 50px;
   height: 100%;
   object-fit: contain;
@@ -57,14 +58,20 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-bottom {
   padding: 0;
 }
 
-.channelbar {
-  height: 70px !important;
-  background-color: #00405f;
+.navbar .fa-plus-circle {
+  font-size: 2.5rem;
 }
 
-.topnavbar{
-  background-color: #00405f !important;
+.channelbar,
+.channelbarbg {
+  height: 80px;
+  background-color: #0a314e !important;
 }
+
+.topnavbar {
+  background-color: #0a314e !important;
+}
+
 span.badge.position-absolute.top-0.start-100.translate-middle.p-2.bg-danger.border.border-light.rounded-circle {
   margin-top: 15px;
   font-size: 10px;
@@ -74,12 +81,32 @@ span.badge.position-absolute.top-0.start-100.translate-middle.p-2.bg-danger.bord
   justify-content: center !important;
 }
 
+.scroll-button-right{
+  position: relative;
+  right: 30px;
+}
+
+.scroll-button-left {
+  position: relative;
+  left: -10px;
+}
 .QuackersLogo {
   width: 65px;
   height: 65px !important;
   scale: 1.2;
   position: relative;
   top: 4px;
-  /* margin-top: 0px; */
 }
 
+.scroll-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.scroll-button:focus {
+  outline: none;
+}

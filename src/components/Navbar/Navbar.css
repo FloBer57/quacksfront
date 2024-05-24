@@ -1,5 +1,5 @@
 .navbar{
-  background-color: #a13b38 !important;
+  background-color: #dae4f7f7 !important;
 }
 .dropdown-menu {
   position: absolute;
@@ -9,6 +9,7 @@
   margin-top: 0.125rem;
   z-index: 1050;
 }
+
 
 .dropdown-toggle-custom {
   display: inline-flex;

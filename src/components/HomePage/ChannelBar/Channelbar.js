@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './Channelbar.css';
 import { PersonXchannelProvider } from '../../../context/personxchannelontext';
 import CreateChannelModal from './CreateChannelModal';
@@ -7,22 +7,38 @@ const url = 'https://localhost:7019';
 
 const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCreateChannel, handleChannelLeft }) => {
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
+  const channelListRef = useRef(null);
 
-  
+  const scrollLeft = () => {
+    if (channelListRef.current) {
+      channelListRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (channelListRef.current) {
+      channelListRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
 
   if (!channels) return <p>Loading...</p>;
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
+      <nav className="navbar navbar-expand-lg fixed-bottom channelbarbg">
         <div className="container-fluid justify-content-between channelbar">
           {/* Logo à gauche */}
           <a className="navbar-brand" href="#" onClick={onLogoClick}>
             <img className="QuackersLogo" src={`${url}/Image/WebsiteNeeds/QuacksLogo.png`} height="40" alt="Logo" />
           </a>
 
+          {/* Bouton de défilement gauche */}
+          <button className="scroll-button scroll-button-left" onClick={scrollLeft}>
+            <i className="fas fa-chevron-left"></i>
+          </button>
+
           {/* Icônes centrées */}
-          <ul className="navbar-nav flex-row justify-content-center discordimage">
+          <ul className="navbar-nav flex-row justify-content-center discordimage" ref={channelListRef}>
             {channels.length === 0 ? (
               <li className="nav-item me-3 me-lg-1">
                 <p className="nav-link channel-zero">Encore 0 channels!</p>
@@ -42,6 +58,11 @@ const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCre
               ))
             )}
           </ul>
+
+          {/* Bouton de défilement droit */}
+          <button className="scroll-button scroll-button-right" onClick={scrollRight}>
+            <i className="fas fa-chevron-right"></i>
+          </button>
 
           {/* Bouton + à droite */}
           <a className="navbar-brand" href="#" onClick={() => setShowCreateChannelModal(true)}>
