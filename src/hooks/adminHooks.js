@@ -22,7 +22,7 @@ import {
 import Papa from 'papaparse';
 
 // Hook for channel list
-export const useChannelList = () => {
+export const useChannelList = (personId) => {
   const [channels, setChannels] = useState([]);
   const [channelTypes, setChannelTypes] = useState([]);
 
@@ -41,13 +41,14 @@ export const useChannelList = () => {
   }, []);
 
   const handleDeleteChannel = async (channelId) => {
+    console.log(channelId, personId);
     try {
-      await deleteChannel(channelId);
+      await deleteChannel(channelId, personId);
       setChannels(channels.filter(channel => channel.channel_Id !== channelId));
       toast.success('Channel deleted successfully!');
     } catch (error) {
-      console.error('Error deleting channel:', error);
-      toast.error('Error deleting channel');
+      console.error('Failed to delete channel:', error);
+      toast.error('Failed to delete channel.');
     }
   };
 

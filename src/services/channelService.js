@@ -1,6 +1,6 @@
 import { post, get, del} from '../api/agent';
 
-// Fonction pour créer un canal
+
 const createChannel = async (data) => {
   return await post('/Channel', data);
 };
@@ -8,18 +8,22 @@ const createChannel = async (data) => {
 const getAllChannels = async (data) => {
   return await get('/Channel');
 };
-// Fonction pour obtenir les messages d'un canal par son ID
+
 const getMessagesByChannelId = async (channelId) => {
   return await get(`/Channel/${channelId}/messages`);
 };
 
-// Fonction pour obtenir un canal par son ID
 const getChannelById = async (channelId) => {
   return await get(`/Channel/${channelId}`);
 };
 
-const deleteChannel = async (channelId) => {
-  return await del(`/Channel/${channelId}`);
+const deleteChannel = async (channelId, personId) => {
+  try {
+    await del(`/Channel`, { channel_Id: channelId, person_Id: personId });
+  } catch (error) {
+    throw new Error(`Error deleting channel: ${error.response ? error.response.statusText : error.message}`);
+  }
 };
+
 
 export { createChannel, getMessagesByChannelId, getAllChannels, deleteChannel, getChannelById};

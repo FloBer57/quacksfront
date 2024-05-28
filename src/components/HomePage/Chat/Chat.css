@@ -19,7 +19,7 @@
   flex-direction: row-reverse;
 }
   .chat-historychanneltype2 {
-    height: calc(100vh - 24px - 190px) !important;
+    height: calc(100vh - 39px - 190px) !important;
 }
   
 .btn-sendmessage, .btn-sendattachment{
@@ -197,8 +197,9 @@
   .buttonchannellist {
     position: absolute;
     z-index: 10;
-    bottom: 80px;
-    right: 0px;
+    bottom: 95px;
+    right: 10px;
+    width: 15%;
 }
 
   .member-list-channelimage{

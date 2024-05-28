@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { handleError } from '../utils/errorHandler'; 
+import { getToken } from '../services/authService';
 
 const API_URL = 'https://localhost:7019/api';
 
@@ -7,7 +8,20 @@ const axiosInstance = axios.create({
   baseURL: API_URL,
 });
 
-// Interceptor pour les réponses
+// Interceptor to add Authorization header
+axiosInstance.interceptors.request.use(
+  config => {
+    const token = getToken();
+    if (token) {
+      console.log("Attaching token to header:", token);
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  error => Promise.reject(error)
+);
+
+// Interceptor for handling responses
 axiosInstance.interceptors.response.use(
   response => response,
   error => {
@@ -45,6 +59,12 @@ const put = (url, data) => request(url, {
   data,
 });
 
-const del = (url) => request(url, { method: 'DELETE' });
+const del = (url, data) => request(url, {
+  method: 'DELETE',
+  data,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 export { get, post, put, del };

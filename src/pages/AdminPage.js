@@ -40,7 +40,7 @@ const AdminPage = () => {
       case 'create-user':
         return <AdminPageCreateAccount />;
       case 'channels':
-        return <AdminPageChannelList />;
+        return <AdminPageChannelList personId={person.person_Id}/>;
       default:
         return null;
     }

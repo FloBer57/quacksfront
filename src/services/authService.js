@@ -7,8 +7,10 @@ const resetPassword = (data) => post('/Authentication/reset-password', data);
 const refreshToken = (data) => post('/Authentication/refresh', data);
 const revokeRefreshToken = (refreshToken) => post('/Authentication/revoke', { refreshToken }); 
 
+const getToken = () => localStorage.getItem('token');
+
 const getUserIdFromToken = () => {
-  const token = localStorage.getItem('token');
+  const token = getToken();
   if (!token) {
     return null;
   }
@@ -23,7 +25,7 @@ const getUserIdFromToken = () => {
 };
 
 const getUserRoleFromToken = () => {
-  const token = localStorage.getItem('token');
+  const token = getToken();
   if (!token) {
     return null;
   }
@@ -37,4 +39,4 @@ const getUserRoleFromToken = () => {
   }
 };
 
-export { login, resetPasswordRequest, resetPassword, refreshToken, revokeRefreshToken, getUserIdFromToken, getUserRoleFromToken };
+export { login, resetPasswordRequest, resetPassword, refreshToken, revokeRefreshToken, getUserIdFromToken, getUserRoleFromToken, getToken };

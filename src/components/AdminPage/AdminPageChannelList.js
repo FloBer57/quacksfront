@@ -3,8 +3,8 @@ import { Table, Button } from 'react-bootstrap';
 import 'react-toastify/dist/ReactToastify.css';
 import { useChannelList } from '../../hooks/adminHooks';
 
-const AdminPageChannelList = () => {
-  const { channels, handleDeleteChannel, getChannelTypeName } = useChannelList();
+const AdminPageChannelList = ({personId}) => {
+  const { channels, handleDeleteChannel, getChannelTypeName } = useChannelList(personId);
 
   return (
     <div className="p-3 admin-list">
