@@ -220,7 +220,7 @@ const Navbar = ({ person }) => {
                       <small className="text-muted">
                         {new Date(notification.notification_DatePost).toLocaleString()}
                       </small>
-                      <Button variant="danger" size="sm" onClick={() => handleDeleteNotification(notification.notification_Id)}>
+                      <Button variant="danger btn-notification" size="sm" onClick={() => handleDeleteNotification(notification.notification_Id)}>
                         Supprimer
                       </Button>
                     </Card.Footer>
