@@ -149,7 +149,6 @@ export const useChatHooks = (channelId, personId, onChannelLeft) => {
     try {
       await deleteAssociation(personId, channelId);
       onChannelLeft(channelId, channel.channel_Name);
-      toast.success("Vous venez de quitter le channel " + channel.channel_Name );
     } catch (error) {
       console.error("Error leaving channel:", error);
       toast.error("Une erreur est arrivé, vous n'avez pas quitter le channel " + channel.channel_Name);

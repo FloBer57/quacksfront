@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { handleError } from '../utils/errorHandler'; 
 import { getToken } from '../services/authService';
 
 const API_URL = 'https://localhost:7019/api';
@@ -13,7 +12,6 @@ axiosInstance.interceptors.request.use(
   config => {
     const token = getToken();
     if (token) {
-      console.log("Attaching token to header:", token);
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -27,7 +25,7 @@ const request = async (url, options) => {
       url,
       ...options,
     });
-    return response.data; 
+    return response.data;
   } catch (error) {
     throw error;
   }
