@@ -21,19 +21,6 @@ axiosInstance.interceptors.request.use(
   error => Promise.reject(error)
 );
 
-// Interceptor for handling responses
-axiosInstance.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response && error.response.status === 404 && error.config.url.includes('/message/')) {
-      console.warn(`404 error ignored for URL: ${error.config.url}`);
-      return Promise.resolve({ data: [] }); 
-    }
-    handleError(error);
-    return Promise.reject(error);
-  }
-);
-
 const request = async (url, options) => {
   try {
     const response = await axiosInstance({

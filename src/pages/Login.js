@@ -55,7 +55,7 @@ const LoginForm = () => {
         }
       }
     } catch (error) {
-      toast.error(`Erreur de connexion: ${error.message}`);
+      toast.error(`Erreur de connexion`);
     }
   };
 
@@ -67,7 +67,7 @@ const LoginForm = () => {
       toast.success('Un lien de réinitialisation du mot de passe a été envoyé à votre adresse email.');
       setIsResetRequest(false);
     } catch (error) {
-      toast.error(`Erreur lors de la demande de réinitialisation: ${error.message}`);
+      toast.error(`Erreur lors de la demande de réinitialisation`);
     }
   };
 
@@ -81,7 +81,7 @@ const LoginForm = () => {
       setIsResetPassword(false);
       navigate('/home');
     } catch (error) {
-      toast.error(`Erreur lors de la réinitialisation du mot de passe: ${error.message}`);
+      toast.error(`Erreur lors de la réinitialisation du mot de passe`);
     }
   };
 

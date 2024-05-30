@@ -87,7 +87,7 @@ export const useUserSecurity = (person, fetchPersonData) => {
       toast.success("Numéro de téléphone modifié avec succès");
     } catch (error) {
       toast.error(
-        `Erreur lors de la modification du numéro de téléphone: ${error.message}`
+        `Erreur lors de la modification du numéro de téléphone`
       );
     }
   };
@@ -139,7 +139,7 @@ export const useUserPersonalisation = (person, fetchPersonData) => {
           toast.success('Image de profil modifiée avec succès');
           fetchPersonData();
         } catch (error) {
-          toast.error(`Erreur lors de la modification de l'image de profil: ${error.message}`);
+          toast.error(`Erreur lors de la modification de l'image de profil`);
         }
       }, 'image/jpeg');
     }

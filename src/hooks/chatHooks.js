@@ -45,7 +45,7 @@ export const useChatHooks = (channelId, personId, onChannelLeft) => {
         }
       } catch (error) {
         console.error("Error fetching messages:", error);
-        toast.error(error.message);
+        toast.error("Une erreur est arrivé lors de la recherche des messages");
       }
     };
 
@@ -63,7 +63,7 @@ export const useChatHooks = (channelId, personId, onChannelLeft) => {
         }
       } catch (error) {
         console.error("Error fetching channel or persons:", error);
-        toast.error(error.message);
+        toast.error("Une erreur est arrivé.");
       }
     };
 
@@ -75,7 +75,7 @@ export const useChatHooks = (channelId, personId, onChannelLeft) => {
         setUserMembers(fetchedUserMembers);
       } catch (error) {
         console.error("Error fetching members by role:", error);
-        toast.error(error.message);
+        toast.error("Erreur lors de la rechercher des personnes du channel");
       }
     };
 
@@ -137,7 +137,7 @@ export const useChatHooks = (channelId, personId, onChannelLeft) => {
       
     } catch (error) {
       console.error("Error sending message:", error);
-      toast.error(error.message);
+      toast.error("Erreur lors de l'envoi du message");
     }
   };
 
@@ -149,9 +149,10 @@ export const useChatHooks = (channelId, personId, onChannelLeft) => {
     try {
       await deleteAssociation(personId, channelId);
       onChannelLeft(channelId, channel.channel_Name);
+      toast.success("Vous venez de quitter le channel " + channel.channel_Name );
     } catch (error) {
       console.error("Error leaving channel:", error);
-      toast.error(error.message);
+      toast.error("Une erreur est arrivé, vous n'avez pas quitter le channel " + channel.channel_Name);
     }
   };
 

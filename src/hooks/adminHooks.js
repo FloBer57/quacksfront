@@ -45,10 +45,10 @@ export const useChannelList = (personId) => {
     try {
       await deleteChannel(channelId, personId);
       setChannels(channels.filter(channel => channel.channel_Id !== channelId));
-      toast.success('Channel deleted successfully!');
+      toast.success('Channel supprimé avec succés');
     } catch (error) {
       console.error('Failed to delete channel:', error);
-      toast.error('Failed to delete channel.');
+      toast.error('Une erreur lors de la suppression du channel');
     }
   };
 
@@ -107,6 +107,7 @@ export const useUserList = () => {
         )
       );
     } catch (error) {
+      toast.error("Erreur au moment de la modification du Job.");
       console.error('Error updating job title:', error);
     }
   };
@@ -122,6 +123,7 @@ export const useUserList = () => {
       );
     } catch (error) {
       console.error('Error updating user role:', error);
+      toast.error("Erreur lors du changement du role")
     }
   };
 
@@ -132,6 +134,7 @@ export const useUserList = () => {
       setUsers(prevUsers => prevUsers.filter(user => user.person_Id !== userId));
     } catch (error) {
       console.error('Error deleting user:', error);
+      toast.error("Erreur lors de la suppression");
     }
   };
 
@@ -188,7 +191,7 @@ export const useCreateAccount = () => {
       setPhoneNumber('');
       setJobTitleId('');
     } catch (error) {
-      toast.error(`Erreur lors de la création de l'utilisateur: ${error.message}`);
+      toast.error(`Erreur lors de la création de l'utilisateur`);
     }
   };
 
@@ -210,7 +213,7 @@ export const useCreateAccount = () => {
             try {
               await createPerson(createPersonDTO);
             } catch (error) {
-              toast.error(`Erreur lors de la création de l'utilisateur: ${error.message}`);
+              toast.error(`Erreur lors de la création de l'utilisateur`);
             }
           }
           toast.success('Tous les utilisateurs ont été créés avec succès à partir du CSV!');
