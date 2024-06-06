@@ -1,6 +1,6 @@
 import { post, get, del } from '../api/agent';
 
-const API_URL = 'https://localhost:7019/api';
+const API_URL = process.env.REACT_APP_API_URL 
 
 export const createNotification = async (notification) => {
   try {

@@ -2,9 +2,6 @@
 import React from "react";
 import "./Acceuil.css";
 import DuckAccueil from "./DuckAcceuil";
-import { MDBCardTitle } from "mdb-react-ui-kit";
-
-const url = "https://localhost:7019/";
 
 const Accueil = ({ person }) => {
 

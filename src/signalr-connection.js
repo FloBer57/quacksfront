@@ -1,6 +1,6 @@
 import * as signalR from '@microsoft/signalr';
 
-const URL = 'https://localhost:7019/hub'; // Remplacez par l'URL de votre hub
+const URL = process.env.REACT_APP_API_URL + '/hub'; //
 
 class SignalRService {
   constructor() {

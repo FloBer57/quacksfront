@@ -3,7 +3,7 @@ import './Channelbar.css';
 import { PersonXchannelProvider } from '../../../context/personxchannelontext';
 import CreateChannelModal from './CreateChannelModal';
 
-const url = 'https://localhost:7019';
+const url = process.env.REACT_APP_API_URL 
 
 const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCreateChannel, handleChannelLeft }) => {
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
