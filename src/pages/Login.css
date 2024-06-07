@@ -8,7 +8,7 @@ h1 > a {
 }
 
 .intro-section {
-  background-image: url(https://localhost:7019/wwwroot/Image/WebsiteNeeds/QuacksLoginWallpaper.jpg);
+  background-image: url(https://localhost:7019/Image/WebsiteNeeds/QuacksLoginWallpaper.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
