@@ -1,6 +1,6 @@
 import * as signalR from '@microsoft/signalr';
 
-const URL = process.env.REACT_APP_API_URL + '/hub'; //
+const URL = process.env.REACT_APP_API_URL_NO_API + '/hub'; //
 
 class SignalRService {
   constructor() {

@@ -4,6 +4,7 @@ import { PersonXchannelProvider } from '../../../context/personxchannelontext';
 import CreateChannelModal from './CreateChannelModal';
 
 const url = process.env.REACT_APP_API_URL 
+const urlNoApi = process.env.REACT_APP_API_URL_NO_API
 
 const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCreateChannel, handleChannelLeft }) => {
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
@@ -29,7 +30,7 @@ const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCre
         <div className="container-fluid justify-content-between channelbar">
           {/* Logo à gauche */}
           <a className="navbar-brand" href="#" onClick={onLogoClick}>
-            <img className="QuackersLogo" src={`${url}/Image/WebsiteNeeds/QuacksLogo.png`} height="40" alt="Logo" />
+            <img className="QuackersLogo" src={`${urlNoApi}/Image/WebsiteNeeds/QuacksLogo.png`} height="40" alt="Logo" />
           </a>
 
           {/* Bouton de défilement gauche */}
@@ -48,7 +49,7 @@ const Channelbar = ({ onChannelClick, onLogoClick, personId, channels, handleCre
                 <li key={channel.channel_Id} className="nav-item me-3 me-lg-1">
                   <a className="nav-link" href="#" onClick={() => onChannelClick(channel.channel_Id)}>
                     <span className="position-relative channel-picture">
-                      <img src={`${url}${channel.channel_ImagePath}`} className="rounded-circle iconcircle" height="40" alt={channel.channel_Name} />
+                      <img src={`${urlNoApi}${channel.channel_ImagePath}`} className="rounded-circle iconcircle" height="40" alt={channel.channel_Name} />
                       <span className="badge position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
                         147
                       </span>
