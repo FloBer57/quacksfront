@@ -170,7 +170,7 @@ const Navbar = ({ person }) => {
                   href="!#"
                 >
                   <img
-                    src={`https://localhost:7019/${person.person_ProfilPicturePath}`}
+                    src={`https://localhost:7019${person.person_ProfilPicturePath}`}
                     className="rounded-circle"
                     height="22"
                     alt="Profile"
